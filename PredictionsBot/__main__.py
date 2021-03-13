@@ -13,7 +13,7 @@ else:
     exit()
 
 
-# Which bot does the user which to use
+# Which bot does the user wish to use
 if os.getenv('PLATFORM').lower() == 'discord':
     from PredictionsBot import discordbot
 elif os.getenv('PLATFORM').lower() == 'twitch':
