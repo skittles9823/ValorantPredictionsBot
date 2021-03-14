@@ -43,24 +43,17 @@ async def ping(ctx):
 async def stats(ctx):
     'Get the stats from the most recent game'
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    roundsPlayed, roundsWon, roundsLost, KDA, KD, Kills, Deaths, Assists, playerHasWon = val.stats()
+    teamPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
     result = "no"
-    if playerHasWon != "false":
+    if playerHasWon != "False":
         result = "yes"
     await ctx.send(
         f"{roundsPlayed} rounds played | "
         f"{roundsWon} rounds won | "
         f"{roundsLost} rounds lost | "
         f"Their KDA was {KDA} | "
-        f"Their KD was {KD} | "
         f"Did they win? {result}"
     )
-
-
-# Headshots stats currently not being reported from the v2 endpoint
-#@bot.command(name='hs')
-#async def test(ctx):
-#    await ctx.send("How many headshots: " + str(matchInfo().HS) + " | Headshot%: " + str(matchInfo().HSP) + "%")
 
 
 bot.run()
