@@ -25,3 +25,10 @@ pip install --user -r requirements.txt
 ```
 python3 -m PredictionsBot
 ```
+
+# Examples
+## Twitch
+![Twitch](images/Twitch.png)
+
+## Discord
+![Discord](images/Discord.png)
