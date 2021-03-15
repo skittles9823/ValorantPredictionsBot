@@ -16,7 +16,7 @@ class TwitchBot(commands.Bot):
 
     # Record incoming moderator commands to console for logging
     async def event_message(self, ctx):
-        if not ctx.author.is_mod or not ctx.content.startswith("!"):
+        if not ctx.author.is_mod or not ctx.content.startswith(os.getenv('BOT_PREFIX')):
             return
         print(ctx.author.name + ": " + ctx.content)
         await self.handle_commands(ctx)
@@ -25,10 +25,6 @@ class TwitchBot(commands.Bot):
     async def event_error(self, error, data=None):
         pass
 
-    # Go away CommandNotFound
-    async def event_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            print(f"The command {ctx.message} doesn't seem to exist.")
 
 bot = TwitchBot()
 
@@ -43,15 +39,15 @@ async def ping(ctx):
 async def stats(ctx):
     'Get the stats from the most recent game'
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    teamPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-    result = "no"
+    teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+    result = "No"
     if playerHasWon != "False":
-        result = "yes"
+        result = "Yes"
     await ctx.send(
-        f"{roundsPlayed} rounds played | "
-        f"{roundsWon} rounds won | "
-        f"{roundsLost} rounds lost | "
-        f"Their KDA was {KDA} | "
+        f"rounds played: {roundsPlayed} | "
+        f"rounds won: {roundsWon} | "
+        f"rounds lost: {roundsLost} | "
+        f"K/D/A: {KDA} | "
         f"Did they win? {result}"
     )
 

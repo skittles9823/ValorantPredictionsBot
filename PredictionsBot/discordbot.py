@@ -7,7 +7,8 @@ load_dotenv("config.env")
 
 
 TOKEN = str(os.getenv('DISCORD_TOKEN'))
-bot = commands.Bot(command_prefix='^')
+username = os.getenv('USERNAME')
+bot = commands.Bot(command_prefix=os.getenv('BOT_PREFIX'))
 
 
 # Don't have a panic attack if someone runs a command the bot doesn't have
@@ -29,18 +30,20 @@ async def ping(ctx):
 @commands.has_role('predictions')
 async def stats(ctx):
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    teamPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-    result = "no"
+    teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+    result = "No"
     if playerHasWon != "False":
-        result = "yes"
+        result = "Yes"
     await ctx.send(
-        f"{roundsPlayed} rounds played\n"
-        f"{roundsWon} rounds won\n"
-        f"{roundsLost} rounds lost\n"
-        f"Their KDA was {KDA}\n"
+        f"rounds played: {roundsPlayed}\n"
+        f"rounds won: {roundsWon}\n"
+        f"rounds lost: {roundsLost}\n"
+        f"K/D/A: {KDA}\n"
         f"Did they win? {result}\n\n"
-        "Players:\n"
-        f"{teamPlayers}"
+        f"{username}\'s team:\n"
+        f"{teamPlayers}\n"
+        "Opponents team:\n"
+        f"{opponentPlayers}"
     )
 
 
