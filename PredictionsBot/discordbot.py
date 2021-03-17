@@ -30,8 +30,8 @@ async def ping(ctx):
 @commands.has_role('predictions')
 async def stats(ctx):
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    deathmatch, gameTime, roundsPlayed, KDA = val.getLatestMatchInfo()
-    if deathmatch == False:
+    deathmatch = val.getLatestMatchInfo()
+    if deathmatch[0] == False:
         deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
         result = "No"
         if playerHasWon != "False":
@@ -49,6 +49,7 @@ async def stats(ctx):
             f"{opponentPlayers}"
         )
     else:
+        deathmatch, gameTime, roundsPlayed, KDA = val.getLatestMatchInfo()
         await ctx.send(
             f"{gameTime}\n"
             f"K/D/A: {KDA}"
