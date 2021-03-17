@@ -30,21 +30,30 @@ async def ping(ctx):
 @commands.has_role('predictions')
 async def stats(ctx):
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-    result = "No"
-    if playerHasWon != "False":
-        result = "Yes"
-    await ctx.send(
-        f"rounds played: {roundsPlayed}\n"
-        f"rounds won: {roundsWon}\n"
-        f"rounds lost: {roundsLost}\n"
-        f"K/D/A: {KDA}\n"
-        f"Did they win? {result}\n\n"
-        f"{username}\'s team:\n"
-        f"{teamPlayers}\n"
-        "Opponents team:\n"
-        f"{opponentPlayers}"
-    )
+    deathmatch, gameTime, roundsPlayed, KDA = val.getLatestMatchInfo()
+    if deathmatch == False:
+        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+        result = "No"
+        if playerHasWon != "False":
+            result = "Yes"
+        await ctx.send(
+            f"{gameTime}\n"
+            f"rounds played: {roundsPlayed}\n"
+            f"rounds won: {roundsWon}\n"
+            f"rounds lost: {roundsLost}\n"
+            f"K/D/A: {KDA}\n"
+            f"Did they win? {result}\n\n"
+            f"{username}\'s team:\n"
+            f"{teamPlayers}\n"
+            "Opponents team:\n"
+            f"{opponentPlayers}"
+        )
+    else:
+        await ctx.send(
+            f"{gameTime}\n"
+            f"K/D/A: {KDA}"
+        )
+
 
 
 bot.run(TOKEN)

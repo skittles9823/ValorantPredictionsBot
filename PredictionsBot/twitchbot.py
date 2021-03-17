@@ -39,17 +39,25 @@ async def ping(ctx):
 async def stats(ctx):
     'Get the stats from the most recent game'
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-    result = "No"
-    if playerHasWon != "False":
-        result = "Yes"
-    await ctx.send(
-        f"rounds played: {roundsPlayed} | "
-        f"rounds won: {roundsWon} | "
-        f"rounds lost: {roundsLost} | "
-        f"K/D/A: {KDA} | "
-        f"Did they win? {result}"
-    )
+    deathmatch, gameTime, roundsPlayed, KDA = val.getLatestMatchInfo()
+    if deathmatch == False:
+        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+        result = "No"
+        if playerHasWon != "False":
+            result = "Yes"
+        await ctx.send(
+            f"{gameTime} | "
+            f"rounds played: {roundsPlayed} | "
+            f"rounds won: {roundsWon} | "
+            f"rounds lost: {roundsLost} | "
+            f"K/D/A: {KDA} | "
+            f"Did they win? {result}"
+        )
+    else:
+        await ctx.send(
+            f"{gameTime} | "
+            f"K/D/A: {KDA}"
+        )
 
 
 bot.run()
