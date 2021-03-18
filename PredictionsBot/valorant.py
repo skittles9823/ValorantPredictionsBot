@@ -31,14 +31,16 @@ def getLatestMatchInfo():
                     teamPlayers += "**Match MVP** "
                 else:
                     teamPlayers += "**Team MVP** "
-            teamPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
+            teamPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" + \
+                            str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
         for players in Players[opponentTeam]:
             if players['name'] == mvpOpponent['name']:
                 if mvpOpponent['stats']['score'] > mvpTeam['stats']['score']:
                     opponentPlayers += "**Match MVP** "
                 else:
                     opponentPlayers += "**Team MVP** "
-            opponentPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
+            opponentPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" \
+                                + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
         playerHasWon = str(json_data['data']['matchres'][0]['teams'][Team]['has_won'])
         roundsWon = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_won'])
         roundsLost = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_lost'])
