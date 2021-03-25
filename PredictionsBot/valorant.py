@@ -1,4 +1,5 @@
 import requests, os
+import math
 
 from dotenv import load_dotenv
 
@@ -25,27 +26,31 @@ def getLatestMatchInfo():
         teamPlayers = ""
         mvpTeam = max(Players[Team], key=lambda ev: ev['stats']['score'])
         mvpOpponent = max(Players[opponentTeam], key=lambda ev: ev['stats']['score'])
+        roundsPlayed = int(json_data['data']['matchres'][0]['metadata']['rounds_played'])
         for players in Players[Team]:
             if players['name'] == mvpTeam['name']:
                 if mvpTeam['stats']['score'] > mvpOpponent['stats']['score']:
                     teamPlayers += "**Match MVP** "
                 else:
                     teamPlayers += "**Team MVP** "
-            teamPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" + \
-                            str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
+            acs = int(players['stats']['score']) / roundsPlayed
+            acs = math.floor(acs)
+            teamPlayers += str(players['name']) + ": " + " KDA: " + str(players['stats']['kills']) + "/" + \
+                            str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         for players in Players[opponentTeam]:
             if players['name'] == mvpOpponent['name']:
                 if mvpOpponent['stats']['score'] > mvpTeam['stats']['score']:
                     opponentPlayers += "**Match MVP** "
                 else:
                     opponentPlayers += "**Team MVP** "
-            opponentPlayers += str(players['name']) + ": " + "" + str(players['stats']['kills']) + "/" \
-                                + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + "\n"
+            acs = int(players['stats']['score']) / roundsPlayed
+            acs = math.floor(acs)
+            opponentPlayers += str(players['name']) + ": " + " KDA: " + str(players['stats']['kills']) + "/" \
+                                + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         playerHasWon = str(json_data['data']['matchres'][0]['teams'][Team]['has_won'])
         roundsWon = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_won'])
         roundsLost = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_lost'])
     gameTime = str(json_data['data']['matchres'][0]['metadata']['game_start_patched'])
-    roundsPlayed = int(json_data['data']['matchres'][0]['metadata']['rounds_played'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
     Assists = int(User['stats']['assists'])
@@ -55,4 +60,4 @@ def getLatestMatchInfo():
         return deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA
     else:
         deathmatch = True
-        return deathmatch, gameTime, roundsPlayed, KDA
+        return deathmatch, gameTime, KDA

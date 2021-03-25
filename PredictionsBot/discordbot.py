@@ -54,7 +54,7 @@ async def stats(ctx):
             f"{opponentPlayers}"
         )
     else:
-        deathmatch, gameTime, roundsPlayed, KDA = val.getLatestMatchInfo()
+        deathmatch, gameTime, KDA = val.getLatestMatchInfo()
         await ctx.send(
             f"{gameTime}\n"
             f"K/D/A: {KDA}"
