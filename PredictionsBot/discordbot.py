@@ -1,4 +1,5 @@
 import os
+import discord
 from discord.ext import commands
 import PredictionsBot.valorant as val
 from dotenv import load_dotenv
@@ -41,18 +42,16 @@ async def stats(ctx):
         result = "No"
         if playerHasWon != "False":
             result = "Yes"
-        await ctx.send(
-            f"{gameTime}\n"
-            f"rounds played: {roundsPlayed}\n"
-            f"rounds won: {roundsWon}\n"
-            f"rounds lost: {roundsLost}\n"
-            f"K/D/A: {KDA}\n"
-            f"Did they win? {result}\n\n"
-            f"{username}\'s team:\n"
-            f"{teamPlayers}\n\n"
-            "Opponents team:\n"
-            f"{opponentPlayers}"
-        )
+        embed=discord.Embed(title="Game Results", color=0x00aaff)
+        embed.add_field(name="Total Time: ", value=f"{gameTime}", inline=False)
+        embed.add_field(name="Rounds Played:", value=f"{roundsPlayed}", inline=False)
+        embed.add_field(name="Rounds Won:", value=f"{roundsWon}", inline=False)
+        embed.add_field(name="Rounds Lost:", value=f"{roundsLost}", inline=False)
+        embed.add_field(name="K/D/A:", value=f"{KDA}", inline=False)
+        embed.add_field(name="Did they win?", value=f"{result}", inline=False)
+        embed.add_field(name=f"{username}'s team:", value=f"{teamPlayers}", inline=False)
+        embed.add_field(name="Opponents team:", value=f"{opponentPlayers}", inline=False)
+        await ctx.send(embed=embed)
     else:
         deathmatch, gameTime, KDA = val.getLatestMatchInfo()
         await ctx.send(
