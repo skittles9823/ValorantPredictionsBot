@@ -7,15 +7,16 @@ load_dotenv("config.env")
 
 
 TOKEN = str(os.getenv('DISCORD_TOKEN'))
+DEBUG = str(os.getenv('DEBUG')).lower()
 username = os.getenv('USERNAME')
 bot = commands.Bot(command_prefix=os.getenv('BOT_PREFIX'))
 
-
-# Don't have a panic attack if someone runs a command the bot doesn't have
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.MissingRole):
-        pass
+if DEBUG != "True":
+    # Don't have a panic attack if someone runs a command the bot doesn't have
+    @bot.event
+    async def on_command_error(ctx, error):
+        if isinstance(error, commands.errors.MissingRole):
+            pass
 
 
 # Ping the bot to see if it's online
@@ -30,7 +31,11 @@ async def ping(ctx):
 @commands.has_role('predictions')
 async def stats(ctx):
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    deathmatch = val.getLatestMatchInfo()
+    try:
+        deathmatch = val.getLatestMatchInfo()
+    except ValueError:
+        await ctx.send("Server down :monkaW:")
+        return
     if deathmatch[0] == False:
         deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
         result = "No"
@@ -54,7 +59,6 @@ async def stats(ctx):
             f"{gameTime}\n"
             f"K/D/A: {KDA}"
         )
-
 
 
 bot.run(TOKEN)

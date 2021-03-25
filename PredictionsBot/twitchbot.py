@@ -21,9 +21,11 @@ class TwitchBot(commands.Bot):
         print(ctx.author.name + ": " + ctx.content)
         await self.handle_commands(ctx)
 
-    # Go away CommandNotFound
-    async def event_error(self, error, data=None):
-        pass
+    DEBUG = str(os.getenv('DEBUG')).lower()
+    if DEBUG != "true":
+        # Go away CommandNotFound
+        async def event_error(self, error, data=None):
+            pass
 
 
 bot = TwitchBot()
@@ -39,7 +41,11 @@ async def ping(ctx):
 async def stats(ctx):
     'Get the stats from the most recent game'
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    deathmatch = val.getLatestMatchInfo()
+    try:
+        deathmatch = val.getLatestMatchInfo()
+    except ValueError:
+        await ctx.send("Server down :monkaW:")
+        return
     if deathmatch[0] == False:
         deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
         result = "No"

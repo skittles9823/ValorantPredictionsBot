@@ -18,3 +18,6 @@ if os.getenv('PLATFORM').lower() == 'discord':
     from PredictionsBot import discordbot
 elif os.getenv('PLATFORM').lower() == 'twitch':
     from PredictionsBot import twitchbot
+else:
+    print("Please set a platform to send the stats to.")
+    exit()
