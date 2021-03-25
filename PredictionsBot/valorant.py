@@ -3,15 +3,15 @@ import math
 
 from dotenv import load_dotenv
 
-load_dotenv("config.env")
-
-puuid = os.getenv('PUUID')
-region = os.getenv('REGION')
-username = os.getenv('USERNAME').lower()
+if os.getenv('discordArgs') != "True":
+    load_dotenv("config.env")
 
 
 # Get the full json response for the most recent match played
 def getLatestMatchInfo():
+    puuid = os.getenv('PUUID')
+    region = os.getenv('REGION')
+    username = os.getenv('USERNAME').lower()
     r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
     json_data = r.json()
     Players = json_data['data']['matchres'][0]['players']
