@@ -35,8 +35,12 @@ def getLatestMatchInfo():
                     teamPlayers += "**Team MVP** "
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            teamPlayers += str(players['name']) + ": " + " KDA: " + str(players['stats']['kills']) + "/" + \
+            teamPlayers += str(players['name']) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+        split = teamPlayers.split('\n')
+        split = split[0:5]
+        split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
+        teamPlayers = '\n'.join(split)
         for players in Players[opponentTeam]:
             if players['name'] == mvpOpponent['name']:
                 if mvpOpponent['stats']['score'] > mvpTeam['stats']['score']:
@@ -45,8 +49,12 @@ def getLatestMatchInfo():
                     opponentPlayers += "**Team MVP** "
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            opponentPlayers += str(players['name']) + ": " + " KDA: " + str(players['stats']['kills']) + "/" \
-                                + str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+            opponentPlayers += str(players['name']) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+                              str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+        split = opponentPlayers.split('\n')
+        split = split[0:5]
+        split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
+        opponentPlayers = '\n'.join(split)
         playerHasWon = str(json_data['data']['matchres'][0]['teams'][Team]['has_won'])
         roundsWon = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_won'])
         roundsLost = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_lost'])

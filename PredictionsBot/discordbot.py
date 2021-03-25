@@ -49,7 +49,7 @@ async def stats(ctx):
             f"K/D/A: {KDA}\n"
             f"Did they win? {result}\n\n"
             f"{username}\'s team:\n"
-            f"{teamPlayers}\n"
+            f"{teamPlayers}\n\n"
             "Opponents team:\n"
             f"{opponentPlayers}"
         )
