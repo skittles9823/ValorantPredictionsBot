@@ -28,29 +28,29 @@ def getLatestMatchInfo():
         mvpOpponent = max(Players[opponentTeam], key=lambda ev: ev['stats']['score'])
         roundsPlayed = int(json_data['data']['matchres'][0]['metadata']['rounds_played'])
         for players in Players[Team]:
+            matchMVP = ""
             if players['name'] == mvpTeam['name']:
                 if mvpTeam['stats']['score'] > mvpOpponent['stats']['score']:
-                    teamPlayers += "**Match MVP** "
-                else:
-                    teamPlayers += "**Team MVP** "
+                    matchMVP = "**"
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            teamPlayers += str(players['name']) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+            teamPlayers += str(matchMVP) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+        teamPlayers = teamPlayers.rstrip()
         split = teamPlayers.split('\n')
         split = split[0:5]
         split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
         teamPlayers = '\n'.join(split)
         for players in Players[opponentTeam]:
+            matchMVP = ""
             if players['name'] == mvpOpponent['name']:
                 if mvpOpponent['stats']['score'] > mvpTeam['stats']['score']:
-                    opponentPlayers += "**Match MVP** "
-                else:
-                    opponentPlayers += "**Team MVP** "
+                    matchMVP = "**"
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            opponentPlayers += str(players['name']) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
-                              str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+            opponentPlayers += str(matchMVP) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+                            str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
+        opponentPlayers = opponentPlayers.rstrip()
         split = opponentPlayers.split('\n')
         split = split[0:5]
         split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
