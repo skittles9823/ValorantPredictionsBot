@@ -14,7 +14,7 @@ def getLatestMatchInfo():
     username = os.getenv('USERNAME').lower()
     r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
     json_data = r.json()
-    Players = json_data['data']['matchres'][0]['players']
+    Players = json_data['data']['matches'][0]['players']
     User = next(d for d in Players['all_players'] if username in d['name'].lower())
     Team = User['team'].lower()
     if Team != puuid:
@@ -26,7 +26,7 @@ def getLatestMatchInfo():
         teamPlayers = ""
         mvpTeam = max(Players[Team], key=lambda ev: ev['stats']['score'])
         mvpOpponent = max(Players[opponentTeam], key=lambda ev: ev['stats']['score'])
-        roundsPlayed = int(json_data['data']['matchres'][0]['metadata']['rounds_played'])
+        roundsPlayed = int(json_data['data']['matches'][0]['metadata']['rounds_played'])
         for players in Players[Team]:
             matchMVP = ""
             if players['name'] == mvpTeam['name']:
@@ -55,10 +55,10 @@ def getLatestMatchInfo():
         split = split[0:5]
         split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
         opponentPlayers = '\n'.join(split)
-        playerHasWon = str(json_data['data']['matchres'][0]['teams'][Team]['has_won'])
-        roundsWon = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_won'])
-        roundsLost = int(json_data['data']['matchres'][0]['teams'][Team]['rounds_lost'])
-    gameTime = str(json_data['data']['matchres'][0]['metadata']['game_start_patched'])
+        playerHasWon = str(json_data['data']['matches'][0]['teams'][Team]['has_won'])
+        roundsWon = int(json_data['data']['matches'][0]['teams'][Team]['rounds_won'])
+        roundsLost = int(json_data['data']['matches'][0]['teams'][Team]['rounds_lost'])
+    gameTime = str(json_data['data']['matches'][0]['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
     Assists = int(User['stats']['assists'])
