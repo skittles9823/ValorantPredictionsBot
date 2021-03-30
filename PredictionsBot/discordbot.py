@@ -41,7 +41,7 @@ async def account(ctx, arg):
                 os.environ["PUUID"] = accounts['puuid']
                 os.environ["USERNAME"] = accounts['username']
     username = os.getenv('USERNAME')
-    await ctx.send(f"Account is set {username}")
+    await ctx.send(f"Account is set to {username}")
 
 
 # Get the stats from the most recent game as well as the K/D/A from all players on the players team
