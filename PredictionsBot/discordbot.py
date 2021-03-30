@@ -1,7 +1,8 @@
 import os
 import discord
-from discord.ext import commands
+import json
 import PredictionsBot.valorant as val
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv("config.env")
@@ -28,22 +29,19 @@ async def ping(ctx):
 
 # If streamer changes accounts sometimes, change these so you can have and change accounts on the fly
 # without having to restart the bot after changing the config
-# This function will soon be changed to an external config file
 @commands.max_concurrency(1, wait=True)
 @bot.command(name='account', help='temp')
 @commands.has_any_role('predictions', 'Twitch Mod', 'Moderators')
 async def account(ctx, arg):
-    if arg == "main":
-        os.environ["discordArgs"] = "True"
-        os.environ["PUUID"] = "966186a2-fa1e-5445-b1c3-ab25f210f3e3"
-        os.environ["USERNAME"] = "Hiko"
-        await ctx.send("Set account to Hiko")
-    if arg == "hoodie":
-        os.environ["discordArgs"] = "True"
-        os.environ["PUUID"] = "d34d1fce-bc25-55eb-b59a-130839e8a4e2"
-        os.environ["USERNAME"] = "Hoodie Seller"
-        await ctx.send("Set account to Hoodie Seller")
-    return
+    with open('accounts.json') as json_file:
+        json_data = json.load(json_file)
+        for accounts in json_data['data']['accounts']:
+            if arg.lower() in accounts['username'].lower():
+                os.environ["discordArgs"] = "True"
+                os.environ["PUUID"] = accounts['puuid']
+                os.environ["USERNAME"] = accounts['username']
+    username = os.getenv('USERNAME')
+    await ctx.send(f"Account is set {username}")
 
 
 # Get the stats from the most recent game as well as the K/D/A from all players on the players team
