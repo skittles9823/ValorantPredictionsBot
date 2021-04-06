@@ -22,7 +22,7 @@ if DEBUG != "True":
 
 # Ping the bot to see if it's online
 @bot.command(name='ping', help='ping the bot to see if it\'s alive')
-@commands.has_any_role('predictions', 'Twitch Mod', 'Moderators')
+@commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def ping(ctx):
     await ctx.send("pong!")
 
@@ -31,7 +31,7 @@ async def ping(ctx):
 # without having to restart the bot after changing the config
 @commands.max_concurrency(1, wait=True)
 @bot.command(name='account', help='temp')
-@commands.has_any_role('predictions', 'Twitch Mod', 'Moderators')
+@commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def account(ctx, arg):
     with open('accounts.json') as json_file:
         json_data = json.load(json_file)
@@ -47,7 +47,7 @@ async def account(ctx, arg):
 # Get the stats from the most recent game as well as the K/D/A from all players on the players team
 @commands.max_concurrency(1, wait=True)
 @bot.command(name='stats', help='Get the stats of the players last match')
-@commands.has_any_role('predictions', 'Twitch Mod', 'Moderators')
+@commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
     await ctx.send("`Please wait up to 10 seconds for me to retrieve the match info.`")
     try:
