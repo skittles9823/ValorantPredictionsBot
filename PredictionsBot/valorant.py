@@ -55,9 +55,14 @@ def getLatestMatchInfo():
         split = split[0:5]
         split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
         opponentPlayers = '\n'.join(split)
-        playerHasWon = str(json_data['data']['matches'][0]['teams'][Team]['has_won'])
-        roundsWon = int(json_data['data']['matches'][0]['teams'][Team]['rounds_won'])
-        roundsLost = int(json_data['data']['matches'][0]['teams'][Team]['rounds_lost'])
+        try:
+            playerHasWon = str(json_data['data']['matches'][0]['teams'][Team]['has_won'])
+            roundsWon = int(json_data['data']['matches'][0]['teams'][Team]['rounds_won'])
+            roundsLost = int(json_data['data']['matches'][0]['teams'][Team]['rounds_lost'])
+        except:
+            playerHasWon = "Unknown"
+            roundsWon = "Unknown"
+            roundsLost = "Unknown"
     gameTime = str(json_data['data']['matches'][0]['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])

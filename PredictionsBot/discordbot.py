@@ -60,6 +60,8 @@ async def stats(ctx):
         result = "No"
         if playerHasWon != "False":
             result = "Yes"
+        else:
+            result = "Unknown"
         username = os.getenv('USERNAME')
         embed=discord.Embed(title="Game Results", color=0x00aaff)
         embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")

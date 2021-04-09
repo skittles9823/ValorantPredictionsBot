@@ -51,6 +51,8 @@ async def stats(ctx):
         result = "No"
         if playerHasWon != "False":
             result = "Yes"
+        else:
+            result = "Unknown"
         await ctx.send(
             f"{gameTime} | "
             f"rounds played: {roundsPlayed} | "
