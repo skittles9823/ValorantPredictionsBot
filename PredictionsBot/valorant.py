@@ -55,14 +55,13 @@ def getLatestMatchInfo():
         split = split[0:5]
         split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
         opponentPlayers = '\n'.join(split)
-        try:
-            playerHasWon = str(json_data['data']['matches'][0]['teams'][Team]['has_won'])
-            roundsWon = int(json_data['data']['matches'][0]['teams'][Team]['rounds_won'])
-            roundsLost = int(json_data['data']['matches'][0]['teams'][Team]['rounds_lost'])
-        except:
-            playerHasWon = "Unknown"
-            roundsWon = "Unknown"
-            roundsLost = "Unknown"
+        roundsWon = 0
+        roundsLost = 0
+        for rounds in json_data['data']['matches'][0]['rounds']:
+            if rounds['winning_team'].lower() == Team:
+                roundsWon += 1
+            else:
+                roundsLost += 1
     gameTime = str(json_data['data']['matches'][0]['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
@@ -70,7 +69,7 @@ def getLatestMatchInfo():
     KDA = f"{Kills}/{Deaths}/{Assists}"
     if Team != puuid:
         deathmatch = False
-        return deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA
+        return deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA
     else:
         deathmatch = True
         return deathmatch, gameTime, KDA

@@ -47,12 +47,13 @@ async def stats(ctx):
         await ctx.send("Server down :monkaW:")
         return
     if deathmatch[0] == False:
-        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-        result = "No"
-        if playerHasWon != "False":
+        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+        if roundsWon > roundsLost:
             result = "Yes"
-        else:
-            result = "Unknown"
+        elif roundsWon < roundsLost:
+            result = "No"
+        elif roundsWon == roundsLost:
+            result = "Draw"
         await ctx.send(
             f"{gameTime} | "
             f"rounds played: {roundsPlayed} | "

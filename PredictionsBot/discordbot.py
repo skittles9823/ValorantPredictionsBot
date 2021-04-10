@@ -12,7 +12,7 @@ TOKEN = str(os.getenv('DISCORD_TOKEN'))
 DEBUG = str(os.getenv('DEBUG')).lower()
 bot = commands.Bot(command_prefix=os.getenv('BOT_PREFIX'))
 
-if DEBUG != "True":
+if DEBUG != "true":
     # Don't have a panic attack if someone runs a command the bot doesn't have
     @bot.event
     async def on_command_error(ctx, error):
@@ -56,12 +56,13 @@ async def stats(ctx):
         await ctx.send("Server down :monkaW:")
         return
     if deathmatch[0] == False:
-        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, playerHasWon, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-        result = "No"
-        if playerHasWon != "False":
+        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+        if roundsWon > roundsLost:
             result = "Yes"
-        else:
-            result = "Unknown"
+        elif roundsWon < roundsLost:
+            result = "No"
+        elif roundsWon == roundsLost:
+            result = "Draw"
         username = os.getenv('USERNAME')
         embed=discord.Embed(title="Game Results", color=0x00aaff)
         embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
