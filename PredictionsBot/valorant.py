@@ -1,6 +1,6 @@
 import requests, os
 import math
-
+import discord
 from dotenv import load_dotenv
 
 if os.getenv('discordArgs') != "True":
@@ -8,7 +8,7 @@ if os.getenv('discordArgs') != "True":
 
 
 # Get the full json response for the most recent match played
-def getLatestMatchInfo():
+def getLatestMatchInfo(bot):
     puuid = os.getenv('PUUID')
     region = os.getenv('REGION')
     username = os.getenv('USERNAME').lower()
@@ -34,7 +34,11 @@ def getLatestMatchInfo():
                     matchMVP = "**"
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            teamPlayers += str(matchMVP) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+            agent = str(players['character'])
+            emote = discord.utils.get(bot.emojis, name=str(agent))
+            if emote is None:
+                emote = ""
+            teamPlayers += str(matchMVP) + str(emote) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         teamPlayers = teamPlayers.rstrip()
         split = teamPlayers.split('\n')
@@ -48,7 +52,11 @@ def getLatestMatchInfo():
                     matchMVP = "**"
             acs = int(players['stats']['score']) / roundsPlayed
             acs = math.floor(acs)
-            opponentPlayers += str(matchMVP) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+            agent = str(players['character'])
+            emote = discord.utils.get(bot.emojis, name=str(agent))
+            if emote is None:
+                emote = ""
+            opponentPlayers += str(matchMVP) + str(emote) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         opponentPlayers = opponentPlayers.rstrip()
         split = opponentPlayers.split('\n')

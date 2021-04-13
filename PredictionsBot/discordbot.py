@@ -51,12 +51,12 @@ async def account(ctx, arg):
 async def stats(ctx):
     await ctx.send("`Please wait up to 10 seconds for me to retrieve the match info.`")
     try:
-        deathmatch = val.getLatestMatchInfo()
+        deathmatch = val.getLatestMatchInfo(bot)
     except ValueError:
         await ctx.send("Server down :monkaW:")
         return
     if deathmatch[0] == False:
-        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
+        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo(bot)
         if roundsWon > roundsLost:
             result = "Yes"
         elif roundsWon < roundsLost:
@@ -76,7 +76,7 @@ async def stats(ctx):
         embed.add_field(name="Opponents team:", value=opponentPlayers, inline=False)
         await ctx.send(embed=embed)
     else:
-        deathmatch, gameTime, KDA = val.getLatestMatchInfo()
+        deathmatch, gameTime, KDA = val.getLatestMatchInfo(bot)
         await ctx.send(
             f"{gameTime}\n"
             f"K/D/A: {KDA}"
