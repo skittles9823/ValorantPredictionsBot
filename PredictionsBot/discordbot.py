@@ -56,7 +56,7 @@ async def stats(ctx):
         await ctx.send("Server down :monkaW:")
         return
     if deathmatch[0] == False:
-        deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo(bot)
+        deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo(bot)
         if roundsWon > roundsLost:
             result = "Yes"
         elif roundsWon < roundsLost:
@@ -64,7 +64,7 @@ async def stats(ctx):
         elif roundsWon == roundsLost:
             result = "Draw"
         username = os.getenv('USERNAME')
-        embed=discord.Embed(title="Game Results", color=0x00aaff)
+        embed=discord.Embed(title=f"{mapPlayed} Game Results", color=0x00aaff)
         embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
         embed.add_field(name="Rounds Played:", value=roundsPlayed, inline=True)
         embed.add_field(name="Rounds Won:", value=roundsWon, inline=True)

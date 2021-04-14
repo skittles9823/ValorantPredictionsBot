@@ -27,6 +27,7 @@ def getLatestMatchInfo(bot):
         mvpTeam = max(Players[Team], key=lambda ev: ev['stats']['score'])
         mvpOpponent = max(Players[opponentTeam], key=lambda ev: ev['stats']['score'])
         roundsPlayed = int(json_data['data']['matches'][0]['metadata']['rounds_played'])
+        mapPlayed = str(json_data['data']['matches'][0]['metadata']['map'])
         for players in Players[Team]:
             matchMVP = ""
             if players['name'] == mvpTeam['name']:
@@ -70,6 +71,7 @@ def getLatestMatchInfo(bot):
                 roundsWon += 1
             else:
                 roundsLost += 1
+    mapPlayed = str(json_data['data']['matches'][0]['metadata']['map'])
     gameTime = str(json_data['data']['matches'][0]['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
@@ -77,7 +79,7 @@ def getLatestMatchInfo(bot):
     KDA = f"{Kills}/{Deaths}/{Assists}"
     if Team != puuid:
         deathmatch = False
-        return deathmatch, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA
+        return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA
     else:
         deathmatch = True
         return deathmatch, gameTime, KDA
