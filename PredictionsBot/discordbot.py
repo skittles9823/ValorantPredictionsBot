@@ -24,7 +24,7 @@ if DEBUG != "true":
 @bot.command(name='ping', help='ping the bot to see if it\'s alive')
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def ping(ctx):
-    await ctx.send("pong!")
+    await ctx.send(f'Pong! {round (bot.latency * 1000)} ms')
 
 
 # If streamer changes accounts sometimes, change these so you can have and change accounts on the fly
