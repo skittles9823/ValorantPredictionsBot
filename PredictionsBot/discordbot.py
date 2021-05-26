@@ -29,8 +29,8 @@ async def ping(ctx):
 
 # If streamer changes accounts sometimes, change these so you can have and change accounts on the fly
 # without having to restart the bot after changing the config
+@bot.command(name='account', help='Switch players the bot is getting stats for')
 @commands.max_concurrency(1, wait=True)
-@bot.command(name='account', help='temp')
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def account(ctx, arg):
     with open('accounts.json') as json_file:
@@ -45,8 +45,8 @@ async def account(ctx, arg):
 
 
 # Get the stats from the most recent game as well as the K/D/A from all players on the players team
-@commands.max_concurrency(1, wait=True)
 @bot.command(name='stats', help='Get the stats of the players last match')
+@commands.max_concurrency(1, wait=True)
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
     await ctx.send("`Please wait up to 10 seconds for me to retrieve the match info.`")
