@@ -14,7 +14,7 @@ def getLatestMatchInfo(bot):
     username = os.getenv('USERNAME').lower()
     r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
     json_data = r.json()
-    Players = json_data['data']['matches'][0]['data']['players']
+    Players = json_data['data'][0]['data']['players']
     User = next(d for d in Players['all_players'] if username in d['name'].lower())
     Team = User['team'].lower()
     if Team != puuid:
@@ -26,8 +26,8 @@ def getLatestMatchInfo(bot):
         teamPlayers = ""
         mvpTeam = max(Players[Team], key=lambda ev: ev['stats']['score'])
         mvpOpponent = max(Players[opponentTeam], key=lambda ev: ev['stats']['score'])
-        roundsPlayed = int(json_data['data']['matches'][0]['data']['metadata']['rounds_played'])
-        mapPlayed = str(json_data['data']['matches'][0]['data']['metadata']['map'])
+        roundsPlayed = int(json_data['data'][0]['data']['metadata']['rounds_played'])
+        mapPlayed = str(json_data['data'][0]['data']['metadata']['map'])
         for players in Players[Team]:
             matchMVP = ""
             if players['name'] == mvpTeam['name']:
@@ -66,13 +66,13 @@ def getLatestMatchInfo(bot):
         opponentPlayers = '\n'.join(split)
         roundsWon = 0
         roundsLost = 0
-        for rounds in json_data['data']['matches'][0]['data']['rounds']:
+        for rounds in json_data['data'][0]['data']['rounds']:
             if rounds['winning_team'].lower() == Team:
                 roundsWon += 1
             else:
                 roundsLost += 1
-    mapPlayed = str(json_data['data']['matches'][0]['data']['metadata']['map'])
-    gameTime = str(json_data['data']['matches'][0]['data']['metadata']['game_start_patched'])
+    mapPlayed = str(json_data['data'][0]['data']['metadata']['map'])
+    gameTime = str(json_data['data'][0]['data']['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
     Assists = int(User['stats']['assists'])
