@@ -49,7 +49,6 @@ async def account(ctx, arg):
 @commands.max_concurrency(1, wait=True)
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
-    await ctx.send("`Please wait up to 10 seconds for me to retrieve the match info.`")
     val.deathmatchCheck(bot)
     if val.deathmatch == False:
         if val.roundsWon > val.roundsLost:

@@ -40,7 +40,6 @@ async def ping(ctx):
 @bot.command(name='stats')
 async def stats(ctx):
     'Get the stats from the most recent game'
-    await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
     val.deathmatchCheck(bot)
     if val.deathmatch == False:
         if val.roundsWon > val.roundsLost:
