@@ -41,33 +41,27 @@ async def ping(ctx):
 async def stats(ctx):
     'Get the stats from the most recent game'
     await ctx.send("Please wait up to 10 seconds for me to retrieve the match info.")
-    try:
-        deathmatch = val.getLatestMatchInfo()
-    except ValueError:
-        await ctx.send("Server down :monkaW:")
-        return
-    if deathmatch[0] == False:
-        deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo()
-        if roundsWon > roundsLost:
+    val.deathmatchCheck(bot)
+    if val.deathmatch == False:
+        if val.roundsWon > val.roundsLost:
             result = "Yes"
-        elif roundsWon < roundsLost:
+        elif val.roundsWon < val.roundsLost:
             result = "No"
-        elif roundsWon == roundsLost:
+        elif val.roundsWon == val.roundsLost:
             result = "Draw"
         await ctx.send(
-            f"Map: {mapPlayed} | "
-            f"{gameTime} | "
-            f"rounds played: {roundsPlayed} | "
-            f"rounds won: {roundsWon} | "
-            f"rounds lost: {roundsLost} | "
-            f"K/D/A: {KDA} | "
+            f"Map: {val.mapPlayed} | "
+            f"{val.gameTime} | "
+            f"rounds played: {val.roundsPlayed} | "
+            f"rounds won: {val.roundsWon} | "
+            f"rounds lost: {val.roundsLost} | "
+            f"K/D/A: {val.KDA} | "
             f"Did they win? {result}"
         )
     else:
-        deathmatch, gameTime, KDA = val.getLatestMatchInfo()
         await ctx.send(
-            f"{gameTime} | "
-            f"K/D/A: {KDA}"
+            f"{val.gameTime} | "
+            f"K/D/A: {val.KDA}"
         )
 
 

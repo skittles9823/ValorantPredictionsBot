@@ -50,36 +50,30 @@ async def account(ctx, arg):
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
     await ctx.send("`Please wait up to 10 seconds for me to retrieve the match info.`")
-    try:
-        deathmatch = val.getLatestMatchInfo(bot)
-    except ValueError:
-        await ctx.send("Server down :monkaW:")
-        return
-    if deathmatch[0] == False:
-        deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA = val.getLatestMatchInfo(bot)
-        if roundsWon > roundsLost:
+    val.deathmatchCheck(bot)
+    if val.deathmatch == False:
+        if val.roundsWon > val.roundsLost:
             result = "Yes"
-        elif roundsWon < roundsLost:
+        elif val.roundsWon < val.roundsLost:
             result = "No"
-        elif roundsWon == roundsLost:
+        elif val.roundsWon == val.roundsLost:
             result = "Draw"
         username = os.getenv('USERNAME')
-        embed=discord.Embed(title=f"{mapPlayed} Game Results", color=0x00aaff)
+        embed=discord.Embed(title=f"{val.mapPlayed} Game Results", color=0x00aaff)
         embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
-        embed.add_field(name="Rounds Played:", value=roundsPlayed, inline=True)
-        embed.add_field(name="Rounds Won:", value=roundsWon, inline=True)
-        embed.add_field(name="Rounds Lost:", value=roundsLost, inline=True)
-        embed.add_field(name="Match Start Time:", value=gameTime, inline=True)
-        embed.add_field(name="K/D/A:", value=KDA, inline=True)
+        embed.add_field(name="Rounds Played:", value=val.roundsPlayed, inline=True)
+        embed.add_field(name="Rounds Won:", value=val.roundsWon, inline=True)
+        embed.add_field(name="Rounds Lost:", value=val.roundsLost, inline=True)
+        embed.add_field(name="Match Start Time:", value=val.gameTime, inline=True)
+        embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
         embed.add_field(name="Did they win?", value=result, inline=True)
-        embed.add_field(name=f"{username}'s team:", value=teamPlayers, inline=False)
-        embed.add_field(name="Opponents team:", value=opponentPlayers, inline=False)
+        embed.add_field(name=f"{username}'s team:", value=val.teamPlayers, inline=False)
+        embed.add_field(name="Opponents team:", value=val.opponentPlayers, inline=False)
         await ctx.send(embed=embed)
     else:
-        deathmatch, gameTime, KDA = val.getLatestMatchInfo(bot)
         await ctx.send(
-            f"{gameTime}\n"
-            f"K/D/A: {KDA}"
+            f"{val.gameTime}\n"
+            f"K/D/A: {val.KDA}"
         )
 
 
