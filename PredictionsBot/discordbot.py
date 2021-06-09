@@ -50,6 +50,8 @@ async def account(ctx, arg):
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
     val.deathmatchCheck(bot)
+    embed=discord.Embed(title=f"{val.mapPlayed} {val.mode} Results", color=0x00aaff)
+    embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
     if val.deathmatch == False:
         if val.roundsWon > val.roundsLost:
             result = "Yes"
@@ -58,8 +60,6 @@ async def stats(ctx):
         elif val.roundsWon == val.roundsLost:
             result = "Draw"
         username = os.getenv('USERNAME')
-        embed=discord.Embed(title=f"{val.mapPlayed} Game Results", color=0x00aaff)
-        embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
         embed.add_field(name="Rounds Played:", value=val.roundsPlayed, inline=True)
         embed.add_field(name="Rounds Won:", value=val.roundsWon, inline=True)
         embed.add_field(name="Rounds Lost:", value=val.roundsLost, inline=True)
@@ -70,10 +70,15 @@ async def stats(ctx):
         embed.add_field(name="Opponents team:", value=val.opponentPlayers, inline=False)
         await ctx.send(embed=embed)
     else:
-        await ctx.send(
-            f"{val.gameTime}\n"
-            f"K/D/A: {val.KDA}"
-        )
+        if val.Kills == 40:
+            result = "Yes"
+        else:
+            result = "No"
+        embed.add_field(name="Match Start Time:", value=val.gameTime, inline=True)
+        embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
+        embed.add_field(name="Did they win?", value=result, inline=True)
+        embed.add_field(name="Players:", value=val.allPlayers, inline=False)
+        await ctx.send(embed=embed)
 
 
 bot.run(TOKEN)

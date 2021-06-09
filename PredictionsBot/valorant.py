@@ -13,6 +13,7 @@ def deathmatchCheck(bot):
     username = os.getenv('USERNAME').lower()
     r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
     json_data = r.json()
+    global mode
     try:
         data = json_data['data'][0]['data']
     except KeyError:
@@ -22,11 +23,11 @@ def deathmatchCheck(bot):
     if mode == "competitive" or mode == "unrated":
         deathmatch = False
         getMatchInfo(bot, data, username, puuid)
-        return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA
+        return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA, mode
     elif mode == "deathmatch":
         deathmatch = True
         getDeathmatchInfo(bot, data, username, puuid)
-        return deathmatch, gameTime, KDA
+        return deathmatch, gameTime, KDA, mode
 
 
 # Get the full json response for the most recent match played
@@ -112,7 +113,7 @@ def getMatchInfo(bot, data, username, puuid):
 
 
 def getDeathmatchInfo(bot, data, username, puuid):
-    global gameTime; global KDA
+    global mapPlayed; global gameTime; global allPlayers; global Kills; global KDA
     Players = data['players']
     User = next(d for d in Players['all_players'] if username in d['name'].lower())
     Team = User['team'].lower()
@@ -121,4 +122,28 @@ def getDeathmatchInfo(bot, data, username, puuid):
     Deaths = int(User['stats']['deaths'])
     Assists = int(User['stats']['assists'])
     KDA = f"{Kills}/{Deaths}/{Assists}"
-    return gameTime, KDA
+    allPlayers = ""
+    mapPlayed = str(data['metadata']['map'])
+    for players in Players['all_players']:
+        winner = ""
+        if players['stats']['kills'] == 40:
+            winner = "**"
+        score = int(players['stats']['score'])
+        try:
+            agent = str(players['character'])
+        except KeyError:
+            agent = "modCheck"
+        if os.getenv('PLATFORM').lower() != "discord":
+            emote = None
+        else:
+            emote = discord.utils.get(bot.emojis, name=str(agent))
+        if emote is None:
+            emote = ""
+        allPlayers += str(winner) + str(emote) + " " + str(players['name']) + str(winner) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
+                        str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " Score: " + str(score) + "\n"
+    allPlayers = allPlayers.rstrip()
+    split = allPlayers.split('\n')
+    split = split[0:13]
+    split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
+    allPlayers = '\n'.join(split)
+    return mapPlayed, gameTime, allPlayers, KDA, Kills
