@@ -18,13 +18,13 @@ def deathmatchCheck(bot):
         data = json_data['data'][0]['data']
     except KeyError:
         data = json_data['data'][0]
-    mode = data['metadata']['mode'].lower()
+    mode = data['metadata']['mode']
     global deathmatch
-    if mode == "competitive" or mode == "unrated":
+    if mode.lower() == "competitive" or mode == "unrated":
         deathmatch = False
         getMatchInfo(bot, data, username, puuid)
         return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA, mode
-    elif mode == "deathmatch":
+    elif mode.lower() == "deathmatch":
         deathmatch = True
         getDeathmatchInfo(bot, data, username, puuid)
         return deathmatch, gameTime, KDA, mode
