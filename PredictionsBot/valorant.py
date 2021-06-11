@@ -20,7 +20,7 @@ def deathmatchCheck(bot):
         data = json_data['data'][0]
     mode = data['metadata']['mode']
     global deathmatch
-    if mode.lower() == "competitive" or mode == "unrated" or mode == "custom game":
+    if mode.lower() == "competitive" or mode.lower() == "unrated" or mode.lower() == "custom game":
         deathmatch = False
         getMatchInfo(bot, data, username, puuid)
         return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA, mode
@@ -103,7 +103,6 @@ def getMatchInfo(bot, data, username, puuid):
                 roundsWon += 1
             else:
                 roundsLost += 1
-    mapPlayed = str(data['metadata']['map'])
     gameTime = str(data['metadata']['game_start_patched'])
     Kills = int(User['stats']['kills'])
     Deaths = int(User['stats']['deaths'])
