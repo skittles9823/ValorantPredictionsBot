@@ -49,7 +49,7 @@ async def account(ctx, arg):
 @commands.max_concurrency(1, wait=True)
 @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
 async def stats(ctx):
-    val.deathmatchCheck(bot)
+    await val.deathmatchCheck(bot)
     embed=discord.Embed(title=f"{val.mapPlayed} {val.mode} Results", color=0x00aaff)
     embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
     if val.deathmatch == False:

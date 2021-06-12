@@ -8,7 +8,7 @@ load_dotenv("config.env")
 class TwitchBot(commands.Bot):
     def __init__(self):
         # Sensitive information loaded from config
-        super().__init__(token=os.getenv('TMI_TOKEN'),
+        super().__init__(irc_token=os.getenv('TMI_TOKEN'),
                         client_secret=os.getenv('CLIENT_ID'),
                         nick=os.getenv('BOT_NICK'),
                         prefix=os.getenv('BOT_PREFIX'),
@@ -40,7 +40,7 @@ async def ping(ctx):
 @bot.command(name='stats')
 async def stats(ctx):
     'Get the stats from the most recent game'
-    val.deathmatchCheck(bot)
+    await val.deathmatchCheck(bot)
     if val.deathmatch == False:
         if val.roundsWon > val.roundsLost:
             result = "Yes"

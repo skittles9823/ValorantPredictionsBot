@@ -1,18 +1,22 @@
 import requests, os
 import math
 import discord
+import aiohttp
 from dotenv import load_dotenv
 
 if os.getenv('discordArgs') != "True":
     load_dotenv("config.env")
 
 
-def deathmatchCheck(bot):
+async def deathmatchCheck(bot):
     puuid = os.getenv('PUUID')
     region = os.getenv('REGION')
     username = os.getenv('USERNAME').lower()
-    r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
-    json_data = r.json()
+    async with aiohttp.ClientSession() as cs:
+        async with cs.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}') as r:
+            json_data = await r.json()
+    #r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
+    #json_data = r.json()
     global mode
     try:
         data = json_data['data'][0]['data']
@@ -22,16 +26,16 @@ def deathmatchCheck(bot):
     global deathmatch
     if mode.lower() == "competitive" or mode.lower() == "unrated" or mode.lower() == "custom game":
         deathmatch = False
-        getMatchInfo(bot, data, username, puuid)
+        await getMatchInfo(bot, data, username, puuid)
         return deathmatch, mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA, mode
     elif mode.lower() == "deathmatch":
         deathmatch = True
-        getDeathmatchInfo(bot, data, username, puuid)
+        await getDeathmatchInfo(bot, data, username, puuid)
         return deathmatch, gameTime, KDA, mode
 
 
 # Get the full json response for the most recent match played
-def getMatchInfo(bot, data, username, puuid):
+async def getMatchInfo(bot, data, username, puuid):
     global mapPlayed; global gameTime; global teamPlayers; global opponentPlayers
     global roundsPlayed; global roundsWon; global roundsLost; global KDA
     Players = data['players']
@@ -111,7 +115,7 @@ def getMatchInfo(bot, data, username, puuid):
     return mapPlayed, gameTime, teamPlayers, opponentPlayers, roundsPlayed, roundsWon, roundsLost, KDA
 
 
-def getDeathmatchInfo(bot, data, username, puuid):
+async def getDeathmatchInfo(bot, data, username, puuid):
     global mapPlayed; global gameTime; global allPlayers; global Kills; global KDA
     Players = data['players']
     User = next(d for d in Players['all_players'] if username in d['name'].lower())
