@@ -15,8 +15,6 @@ async def deathmatchCheck(bot):
     async with aiohttp.ClientSession() as cs:
         async with cs.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}') as r:
             json_data = await r.json()
-    #r = requests.get(f'https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}')
-    #json_data = r.json()
     global mode
     try:
         data = json_data['data'][0]['data']
@@ -63,12 +61,10 @@ async def getMatchInfo(bot, data, username, puuid):
                 agent = str(players['character'])
             except KeyError:
                 agent = "modCheck"
-            if os.getenv('PLATFORM').lower() != "discord":
-                emote = None
+            if bot is None:
+                emote = ""
             else:
                 emote = discord.utils.get(bot.emojis, name=str(agent))
-            if emote is None:
-                emote = ""
             teamPlayers += str(matchMVP) + str(emote) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         teamPlayers = teamPlayers.rstrip()
@@ -87,12 +83,10 @@ async def getMatchInfo(bot, data, username, puuid):
                 agent = str(players['character'])
             except KeyError:
                 agent = "modCheck"
-            if os.getenv('PLATFORM').lower() != "discord":
-                emote = None
+            if bot is None:
+                emote = ""
             else:
                 emote = discord.utils.get(bot.emojis, name=str(agent))
-            if emote is None:
-                emote = ""
             opponentPlayers += str(matchMVP) + str(emote) + str(players['name']) + str(matchMVP) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                             str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " ACS: " + str(acs) + "\n"
         opponentPlayers = opponentPlayers.rstrip()
@@ -136,17 +130,15 @@ async def getDeathmatchInfo(bot, data, username, puuid):
             agent = str(players['character'])
         except KeyError:
             agent = "modCheck"
-        if os.getenv('PLATFORM').lower() != "discord":
-            emote = None
+        if bot is None:
+            emote = ""
         else:
             emote = discord.utils.get(bot.emojis, name=str(agent))
-        if emote is None:
-            emote = ""
         allPlayers += str(winner) + str(emote) + " " + str(players['name']) + str(winner) + ": " + "KDA: " + str(players['stats']['kills']) + "/" + \
                         str(players['stats']['deaths']) + "/" + str(players['stats']['assists']) + " Score: " + str(score) + "\n"
     allPlayers = allPlayers.rstrip()
     split = allPlayers.split('\n')
-    split = split[0:13]
+    split = split[0:14]
     split.sort(key = lambda x: int(x.rsplit(' ',1)[1]), reverse=True)
     allPlayers = '\n'.join(split)
     return mapPlayed, gameTime, allPlayers, KDA, Kills
