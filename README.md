@@ -18,12 +18,11 @@ In the future, the hope is this bot will be able to end a prediction and also gi
 pip install --user -r requirements.txt
 ```
 
-2. Create a basic bot instance for either Twitch, and/or Discord, you can use Google for this.
-3. Rename and edit sample.env to config.env with the bots credentials, and set the preferred platform you wish to use.
-4. Find the players Username, Region and PUUID you wish to use and input them in the correct env vars. (These will be the default values)
-5. If you wish to add more accounts, open accounts.json and expand the `accounts` array
-    - Currently it only supports accounts from the same region but I'll likely add in a region option later.
-6. Finally once the config is setup and finished, run the bot with:
+2. Create a basic bot instance for Twitch and Discord, you can use Google for this.
+3. Rename and edit sample.env to config.env with the bots credentials.
+4. Find the players Username, Region and PUUID you wish to use and input them in the correct env vars.
+    - if you wish to use the bot with multiple Valorant accounts, edit [sample_accounts.json](./sample_accounts.json) and rename it to accounts.json, then use the account command to switch between users via their username.
+5. Finally once the config is setup and finished, run the bot with:
 
 ```
 python3 -m PredictionsBot

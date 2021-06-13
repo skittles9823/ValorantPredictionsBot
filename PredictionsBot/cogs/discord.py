@@ -14,10 +14,8 @@ class Discord(commands.Cog):
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round (self.bot.latency * 1000)} ms')
 
-    # Currently doesn't work with async cogs, will fix later
     # If streamer changes accounts sometimes, change these so you can have and change accounts on the fly
     # without having to restart the bot after changing the config
-    """
     @commands.command(name='account', help='Switch players the bot is getting stats for')
     @commands.max_concurrency(1, wait=True)
     @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
@@ -29,9 +27,9 @@ class Discord(commands.Cog):
                     os.environ["discordArgs"] = "True"
                     os.environ["PUUID"] = accounts['puuid']
                     os.environ["USERNAME"] = accounts['username']
+                    os.environ["REGION"] = accounts['region']
         username = os.getenv('USERNAME')
         await ctx.send(f"Account is set to {username}")
-    """
 
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
     @commands.command(name='stats', help='Get the stats of the players last match')

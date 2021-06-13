@@ -1,0 +1,16 @@
+{
+  "data": {
+    "accounts": [
+      {
+        "username": "100T Hiko",
+        "puuid": "966186a2-fa1e-5445-b1c3-ab25f210f3e3",
+        "region": "na"
+      },
+      {
+        "username": "Waterhouse",
+        "puuid": "4181617d-414a-5e56-8249-116ff548b040",
+        "region": "ap"
+      }
+    ]
+  }
+}
