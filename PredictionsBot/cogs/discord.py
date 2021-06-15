@@ -1,8 +1,12 @@
-import os
-import discord
 import json
+import os
+
+import aiohttp.client_exceptions as aioerror
 import PredictionsBot.valorant as val
+
+import discord
 from discord.ext import commands
+
 
 class Discord(commands.Cog):
     def __init__(self, bot):
@@ -36,36 +40,60 @@ class Discord(commands.Cog):
     @commands.max_concurrency(1, wait=True)
     @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
     async def stats(self, ctx):
-        await val.deathmatchCheck(self.bot)
-        embed=discord.Embed(title=f"{val.mapPlayed} {val.mode} Results", color=0x00aaff)
-        embed.set_author(name="ValorantPredictionsBot", url="https://github.com/skittles9823/ValorantPredictionsBot")
-        if val.deathmatch == False:
-            if val.roundsWon > val.roundsLost:
+        try:
+            await val.gamemode_check(self.bot)
+        except aioerror.CommandInvokeError:
+            await ctx.send(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
+        embed = discord.Embed(
+            title=f"{val.MAP_PLAYED} {val.MODE} Results", color=0x00aaff)
+        embed.set_author(name="ValorantPredictionsBot",
+                         url="https://github.com/skittles9823/ValorantPredictionsBot")
+        if val.DEATHMATCH == False:
+            # data["teams"][team]["has_won"] was removed previously as it didn't work in custom games
+            # looks like the functionality is back, but I'd like to wait to test draws before adding it back.
+            # if val.HAS_WON is not None:
+            #    if val.HAS_WON == "true":
+            #        result = "Yes"
+            #    else:
+            #        result = "No"
+            #
+            # I believe the val.ROUNDS_WON/val.ROUNDS_LOST logic won't work if a team surrenders when they're winning
+            # thankfully that is a rare occurance so it's unlikely to happen.
+            if val.ROUNDS_WON > val.ROUNDS_LOST:
                 result = "Yes"
-            elif val.roundsWon < val.roundsLost:
+            elif val.ROUNDS_WON < val.ROUNDS_LOST:
                 result = "No"
-            elif val.roundsWon == val.roundsLost:
+            elif val.ROUNDS_WON == val.ROUNDS_LOST:
                 result = "Draw"
             username = os.getenv('USERNAME')
-            embed.add_field(name="Rounds Played:", value=val.roundsPlayed, inline=True)
-            embed.add_field(name="Rounds Won:", value=val.roundsWon, inline=True)
-            embed.add_field(name="Rounds Lost:", value=val.roundsLost, inline=True)
-            embed.add_field(name="Match Start Time:", value=val.gameTime, inline=True)
+            embed.add_field(name="Rounds Played:",
+                            value=val.ROUNDS_PLAYED, inline=True)
+            embed.add_field(name="Rounds Won:",
+                            value=val.ROUNDS_WON, inline=True)
+            embed.add_field(name="Rounds Lost:",
+                            value=val.ROUNDS_LOST, inline=True)
+            embed.add_field(name="Match Start Time:",
+                            value=val.GAME_TIME, inline=True)
             embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
             embed.add_field(name="Did they win?", value=result, inline=True)
-            embed.add_field(name=f"{username}'s team:", value=val.teamPlayers, inline=False)
-            embed.add_field(name="Opponents team:", value=val.opponentPlayers, inline=False)
+            embed.add_field(name=f"{username}'s team:",
+                            value=val.TEAM_PLAYERS, inline=False)
+            embed.add_field(name="Opponents team:",
+                            value=val.OPPONENT_PLAYERS, inline=False)
             await ctx.send(embed=embed)
         else:
-            if val.Kills == 40:
+            if val.KILLS == 40:
                 result = "Yes"
             else:
                 result = "No"
-            embed.add_field(name="Match Start Time:", value=val.gameTime, inline=True)
+            embed.add_field(name="Match Start Time:",
+                            value=val.GAME_TIME, inline=True)
             embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
             embed.add_field(name="Did they win?", value=result, inline=True)
-            embed.add_field(name="Players:", value=val.allPlayers, inline=False)
+            embed.add_field(name="Players:",
+                            value=val.ALL_PLAYERS, inline=False)
             await ctx.send(embed=embed)
+
 
 def setup(discord_bot):
     discord_bot.add_cog(Discord(discord_bot))
