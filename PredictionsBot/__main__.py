@@ -24,8 +24,11 @@ if DEBUG != "true":
         if isinstance(error, commands.errors.MissingRole):
             pass
 
-bot.load_extension("PredictionsBot.cogs.twitch")
 bot.load_extension("PredictionsBot.cogs.discord")
+try:
+    bot.load_extension("PredictionsBot.cogs.twitch")
+except commands.errors.ExtensionFailed:
+    pass
 if os.path.isfile('PredictionsBot/cogs/personal.py'):
     bot.load_extension("PredictionsBot.cogs.personal")
 
