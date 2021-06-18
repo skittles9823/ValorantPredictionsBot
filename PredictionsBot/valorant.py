@@ -86,6 +86,7 @@ async def get_match_info(bot, data, username, puuid):
                            key=lambda ev: ev["stats"]["score"])
         ROUNDS_PLAYED = int(data["metadata"]["rounds_played"])
         MAP_PLAYED = str(data["metadata"]["map"])
+        rank_emote = ""
         for player in players[team]:
             match_mvp = ""
             if (
@@ -99,12 +100,18 @@ async def get_match_info(bot, data, username, puuid):
                 agent = str(player["character"])
             except KeyError:
                 agent = "modCheck"
-            emote = (
+            agent_emote = (
                 "" if bot is None else discord.utils.get(
                     bot.emojis, name=str(agent))
             )
+            if MODE.lower() == "competitive":
+                rank = str(player["currenttier_patched"]).replace(' ', '')
+                rank_emote = (
+                    "" if bot is None else discord.utils.get(
+                        bot.emojis, name=str(rank))
+                )
             TEAM_PLAYERS += (
-                f'{match_mvp}{emote} {player["name"]}{match_mvp}: '
+                f'{match_mvp}{agent_emote}{rank_emote} {player["name"]}{match_mvp}: '
                 f'{player["stats"]["kills"]}/'
                 f'{player["stats"]["deaths"]}/'
                 f'{player["stats"]["assists"]} ACS: {acs}\n'
@@ -132,8 +139,14 @@ async def get_match_info(bot, data, username, puuid):
                 "" if bot is None else discord.utils.get(
                     bot.emojis, name=str(agent))
             )
+            if MODE.lower() == "competitive":
+                rank = str(player["currenttier_patched"]).replace(' ', '')
+                rank_emote = (
+                    "" if bot is None else discord.utils.get(
+                        bot.emojis, name=str(rank))
+                )
             OPPONENT_PLAYERS += (
-                f'{match_mvp}{emote} {player["name"]}{match_mvp}: '
+                f'{match_mvp}{emote}{rank_emote} {player["name"]}{match_mvp}: '
                 f'{player["stats"]["kills"]}/'
                 f'{player["stats"]["deaths"]}/'
                 f'{player["stats"]["assists"]} ACS: {acs}\n'

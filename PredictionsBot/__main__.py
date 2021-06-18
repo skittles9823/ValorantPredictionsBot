@@ -25,11 +25,16 @@ if DEBUG != "true":
             pass
 
 bot.load_extension("PredictionsBot.cogs.discord")
+# I'd put these in the same try catch but since I'm lazy and use this bot also as my own twitch bot in a `personal` cog it's just easier this way.
 try:
     bot.load_extension("PredictionsBot.cogs.twitch")
 except commands.errors.ExtensionFailed:
     pass
-if os.path.isfile('PredictionsBot/cogs/personal.py'):
-    bot.load_extension("PredictionsBot.cogs.personal")
+try:
+    if os.path.isfile('PredictionsBot/cogs/personal.py'):
+        bot.load_extension("PredictionsBot.cogs.personal")
+except commands.errors.ExtensionFailed:
+    pass
+
 
 bot.run(TOKEN)

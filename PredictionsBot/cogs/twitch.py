@@ -41,7 +41,7 @@ class Twitch(discord_commands.Cog):
         'Get the stats from the most recent game'
         bot = None
         try:
-            await val.gamemode_check(self.bot)
+            await val.gamemode_check(bot)
         except aioerror.CommandInvokeError:
             await ctx.send("API down Sadge")
         if val.DEATHMATCH == False:
