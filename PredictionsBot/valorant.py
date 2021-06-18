@@ -110,6 +110,8 @@ async def get_match_info(bot, data, username, puuid):
                     "" if bot is None else discord.utils.get(
                         bot.emojis, name=str(rank))
                 )
+                if rank_emote is None:
+                    rank_emote = ""
             TEAM_PLAYERS += (
                 f'{match_mvp}{agent_emote}{rank_emote} {player["name"]}{match_mvp}: '
                 f'{player["stats"]["kills"]}/'
@@ -145,6 +147,8 @@ async def get_match_info(bot, data, username, puuid):
                     "" if bot is None else discord.utils.get(
                         bot.emojis, name=str(rank))
                 )
+                if rank_emote is None:
+                    rank_emote = ""
             OPPONENT_PLAYERS += (
                 f'{match_mvp}{emote}{rank_emote} {player["name"]}{match_mvp}: '
                 f'{player["stats"]["kills"]}/'
