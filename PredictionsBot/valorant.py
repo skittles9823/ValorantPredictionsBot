@@ -21,6 +21,8 @@ ROUNDS_LOST = None
 HAS_WON = None
 OPPONENT_PLAYERS = None
 
+DATA = None
+
 if os.getenv("discordArgs") != "True":
     load_dotenv("config.env")
 
@@ -38,7 +40,12 @@ async def gamemode_check(bot):
     try:
         data = json_data["data"][0]["data"]
     except KeyError:
-        data = json_data["data"][0]
+        try:
+            data = json_data["data"][0]
+        except KeyError:
+            global DATA
+            DATA = json_data["message"]
+            return DATA
     MODE = data["metadata"]["mode"]
     global DEATHMATCH
     if MODE.lower() in ["competitive", "unrated", "custom game"]:

@@ -44,55 +44,60 @@ class Discord(commands.Cog):
             await val.gamemode_check(self.bot)
         except aioerror.CommandInvokeError:
             await ctx.send(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
-        embed = discord.Embed(
-            title=f"{val.MAP_PLAYED} {val.MODE} Results", color=0x00aaff)
-        embed.set_author(name="ValorantPredictionsBot",
-                         url="https://github.com/skittles9823/ValorantPredictionsBot")
-        if val.DEATHMATCH == False:
-            # data["teams"][team]["has_won"] was removed previously as it didn't work in custom games
-            # looks like the functionality is back, but I'd like to wait to test draws before adding it back.
-            # if val.HAS_WON is not None:
-            #    if val.HAS_WON == "true":
-            #        result = "Yes"
-            #    else:
-            #        result = "No"
-            #
-            # I believe the val.ROUNDS_WON/val.ROUNDS_LOST logic won't work if a team surrenders when they're winning
-            # thankfully that is a rare occurance so it's unlikely to happen.
-            if val.ROUNDS_WON > val.ROUNDS_LOST:
-                result = "Yes"
-            elif val.ROUNDS_WON < val.ROUNDS_LOST:
-                result = "No"
-            elif val.ROUNDS_WON == val.ROUNDS_LOST:
-                result = "Draw"
-            username = os.getenv('USERNAME')
-            embed.add_field(name="Rounds Played:",
-                            value=val.ROUNDS_PLAYED, inline=True)
-            embed.add_field(name="Rounds Won:",
-                            value=val.ROUNDS_WON, inline=True)
-            embed.add_field(name="Rounds Lost:",
-                            value=val.ROUNDS_LOST, inline=True)
-            embed.add_field(name="Match Start Time:",
-                            value=val.GAME_TIME, inline=True)
-            embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
-            embed.add_field(name="Did they win?", value=result, inline=True)
-            embed.add_field(name=f"{username}'s team:",
-                            value=val.TEAM_PLAYERS, inline=False)
-            embed.add_field(name="Opponents team:",
-                            value=val.OPPONENT_PLAYERS, inline=False)
-            await ctx.send(embed=embed)
-        else:
-            if val.KILLS == 40:
-                result = "Yes"
+        if val.DATA == None:
+            embed = discord.Embed(
+                title=f"{val.MAP_PLAYED} {val.MODE} Results", color=0x00aaff)
+            embed.set_author(name="ValorantPredictionsBot",
+                             url="https://github.com/skittles9823/ValorantPredictionsBot")
+            if val.DEATHMATCH == False:
+                # data["teams"][team]["has_won"] was removed previously as it didn't work in custom games
+                # looks like the functionality is back, but I'd like to wait to test draws before adding it back.
+                # if val.HAS_WON is not None:
+                #    if val.HAS_WON == "true":
+                #        result = "Yes"
+                #    else:
+                #        result = "No"
+                #
+                # I believe the val.ROUNDS_WON/val.ROUNDS_LOST logic won't work if a team surrenders when they're winning
+                # thankfully that is a rare occurance so it's unlikely to happen.
+                if val.ROUNDS_WON > val.ROUNDS_LOST:
+                    result = "Yes"
+                elif val.ROUNDS_WON < val.ROUNDS_LOST:
+                    result = "No"
+                elif val.ROUNDS_WON == val.ROUNDS_LOST:
+                    result = "Draw"
+                username = os.getenv('USERNAME')
+                embed.add_field(name="Rounds Played:",
+                                value=val.ROUNDS_PLAYED, inline=True)
+                embed.add_field(name="Rounds Won:",
+                                value=val.ROUNDS_WON, inline=True)
+                embed.add_field(name="Rounds Lost:",
+                                value=val.ROUNDS_LOST, inline=True)
+                embed.add_field(name="Match Start Time:",
+                                value=val.GAME_TIME, inline=True)
+                embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
+                embed.add_field(name="Did they win?",
+                                value=result, inline=True)
+                embed.add_field(name=f"{username}'s team:",
+                                value=val.TEAM_PLAYERS, inline=False)
+                embed.add_field(name="Opponents team:",
+                                value=val.OPPONENT_PLAYERS, inline=False)
+                await ctx.send(embed=embed)
             else:
-                result = "No"
-            embed.add_field(name="Match Start Time:",
-                            value=val.GAME_TIME, inline=True)
-            embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
-            embed.add_field(name="Did they win?", value=result, inline=True)
-            embed.add_field(name="Players:",
-                            value=val.ALL_PLAYERS, inline=False)
-            await ctx.send(embed=embed)
+                if val.KILLS == 40:
+                    result = "Yes"
+                else:
+                    result = "No"
+                embed.add_field(name="Match Start Time:",
+                                value=val.GAME_TIME, inline=True)
+                embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
+                embed.add_field(name="Did they win?",
+                                value=result, inline=True)
+                embed.add_field(name="Players:",
+                                value=val.ALL_PLAYERS, inline=False)
+                await ctx.send(embed=embed)
+        else:
+            await ctx.send(f"API Error {discord.utils.get(self.bot.emojis, name='Sadge')}: {val.DATA}")
 
 
 def setup(discord_bot):

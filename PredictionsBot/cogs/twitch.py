@@ -44,37 +44,40 @@ class Twitch(discord_commands.Cog):
             await val.gamemode_check(bot)
         except aioerror.CommandInvokeError:
             await ctx.send("API down Sadge")
-        if val.DEATHMATCH == False:
-            # data["teams"][team]["has_won"] was removed previously as it didn't work in custom games
-            # looks like the functionality is back, but I'd like to wait to test draws before adding it back.
-            # if val.HAS_WON is not None:
-            #    if val.HAS_WON == "true":
-            #        result = "Yes"
-            #    else:
-            #        result = "No"
-            #
-            # I believe the val.ROUNDS_WON/val.ROUNDS_LOST logic won't work if a team surrenders when they're winning
-            # thankfully that is a rare occurance so it's unlikely to happen.
-            if val.ROUNDS_WON > val.ROUNDS_LOST:
-                result = "Yes"
-            elif val.ROUNDS_WON < val.ROUNDS_LOST:
-                result = "No"
-            elif val.ROUNDS_WON == val.ROUNDS_LOST:
-                result = "Draw"
-            await ctx.send(
-                f"Map: {val.MAP_PLAYED} | "
-                f"{val.GAME_TIME} | "
-                f"rounds played: {val.ROUNDS_PLAYED} | "
-                f"rounds won: {val.ROUNDS_WON} | "
-                f"rounds lost: {val.ROUNDS_LOST} | "
-                f"K/D/A: {val.KDA} | "
-                f"Did they win? {result}"
-            )
+        if val.DATA == None:
+            if val.DEATHMATCH == False:
+                # data["teams"][team]["has_won"] was removed previously as it didn't work in custom games
+                # looks like the functionality is back, but I'd like to wait to test draws before adding it back.
+                # if val.HAS_WON is not None:
+                #    if val.HAS_WON == "true":
+                #        result = "Yes"
+                #    else:
+                #        result = "No"
+                #
+                # I believe the val.ROUNDS_WON/val.ROUNDS_LOST logic won't work if a team surrenders when they're winning
+                # thankfully that is a rare occurance so it's unlikely to happen.
+                if val.ROUNDS_WON > val.ROUNDS_LOST:
+                    result = "Yes"
+                elif val.ROUNDS_WON < val.ROUNDS_LOST:
+                    result = "No"
+                elif val.ROUNDS_WON == val.ROUNDS_LOST:
+                    result = "Draw"
+                await ctx.send(
+                    f"Map: {val.MAP_PLAYED} | "
+                    f"{val.GAME_TIME} | "
+                    f"rounds played: {val.ROUNDS_PLAYED} | "
+                    f"rounds won: {val.ROUNDS_WON} | "
+                    f"rounds lost: {val.ROUNDS_LOST} | "
+                    f"K/D/A: {val.KDA} | "
+                    f"Did they win? {result}"
+                )
+            else:
+                await ctx.send(
+                    f"{val.GAME_TIME} | "
+                    f"K/D/A: {val.KDA}"
+                )
         else:
-            await ctx.send(
-                f"{val.GAME_TIME} | "
-                f"K/D/A: {val.KDA}"
-            )
+            await ctx.send(f"API Error: {val.DATA}")
 
 
 def setup(discord_bot):
