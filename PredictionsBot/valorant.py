@@ -104,13 +104,15 @@ async def get_match_info(bot, data, username, puuid):
             acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
             acs = math.floor(acs)
             try:
-                agent = str(player["character"])
+                agent_emote = str(player["character"])
             except KeyError:
-                agent = "modCheck"
+                agent_emote = "modCheck"
             agent_emote = (
                 "" if bot is None else discord.utils.get(
-                    bot.emojis, name=str(agent))
+                    bot.emojis, name=str(agent_emote))
             )
+            if agent_emote is None:
+                agent_emote = discord.utils.get(bot.emojis, name="modCheck")
             if MODE.lower() == "competitive":
                 rank = str(player["currenttier_patched"]).replace(' ', '')
                 rank_emote = (
@@ -141,13 +143,15 @@ async def get_match_info(bot, data, username, puuid):
             acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
             acs = math.floor(acs)
             try:
-                agent = str(player["character"])
+                agent_emote = str(player["character"])
             except KeyError:
-                agent = "modCheck"
-            emote = (
+                agent_emote = "modCheck"
+            agent_emote = (
                 "" if bot is None else discord.utils.get(
-                    bot.emojis, name=str(agent))
+                    bot.emojis, name=str(agent_emote))
             )
+            if agent_emote is None:
+                agent_emote = discord.utils.get(bot.emojis, name="modCheck")
             if MODE.lower() == "competitive":
                 rank = str(player["currenttier_patched"]).replace(' ', '')
                 rank_emote = (
@@ -157,7 +161,7 @@ async def get_match_info(bot, data, username, puuid):
                 if rank_emote is None:
                     rank_emote = ""
             OPPONENT_PLAYERS += (
-                f'{match_mvp}{emote}{rank_emote} {player["name"]}{match_mvp}: '
+                f'{match_mvp}{agent_emote}{rank_emote} {player["name"]}{match_mvp}: '
                 f'{player["stats"]["kills"]}/'
                 f'{player["stats"]["deaths"]}/'
                 f'{player["stats"]["assists"]} ACS: {acs}\n'
@@ -222,13 +226,13 @@ async def get_deathmatch_info(bot, data, username, puuid):
             winner = "**"
         score = int(player["stats"]["score"])
         try:
-            agent = str(player["character"])
+            agent_emote = str(player["character"])
         except KeyError:
-            agent = "modCheck"
-        emote = "" if bot is None else discord.utils.get(
-            bot.emojis, name=str(agent))
+            agent_emote = "modCheck"
+        agent_emote = "" if bot is None else discord.utils.get(
+            bot.emojis, name=str(agent_emote))
         ALL_PLAYERS += (
-            f'{winner}{emote} {player["name"]}{winner}: '
+            f'{winner}{agent_emote} {player["name"]}{winner}: '
             f'{player["stats"]["kills"]}/'
             f'{player["stats"]["deaths"]}/'
             f'{player["stats"]["assists"]} Score: {score}\n'
