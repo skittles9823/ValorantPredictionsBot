@@ -105,6 +105,8 @@ async def get_match_info(bot, data, username, puuid):
             acs = math.floor(acs)
             try:
                 agent_emote = str(player["character"])
+                if agent_emote == "KAY/O":
+                    agent_emote = "KAYO"
             except KeyError:
                 agent_emote = "modCheck"
             agent_emote = (
@@ -144,6 +146,8 @@ async def get_match_info(bot, data, username, puuid):
             acs = math.floor(acs)
             try:
                 agent_emote = str(player["character"])
+                if agent_emote == "KAY/O":
+                    agent_emote = "KAYO"
             except KeyError:
                 agent_emote = "modCheck"
             agent_emote = (
@@ -227,6 +231,8 @@ async def get_deathmatch_info(bot, data, username, puuid):
         score = int(player["stats"]["score"])
         try:
             agent_emote = str(player["character"])
+            if agent_emote == "KAY/O":
+                    agent_emote = "KAYO"
         except KeyError:
             agent_emote = "modCheck"
         agent_emote = "" if bot is None else discord.utils.get(
