@@ -1,9 +1,7 @@
 import math
-import os
 
 import aiohttp
 import discord
-from dotenv import load_dotenv
 
 MODE = None
 DEATHMATCH = None
@@ -23,14 +21,11 @@ OPPONENT_PLAYERS = None
 
 DATA = None
 
-if os.getenv("discordArgs") != "True":
-    load_dotenv("config.env")
-
 
 async def gamemode_check(bot):
-    puuid = os.getenv("PUUID")
-    region = os.getenv("REGION")
-    username = os.getenv("USERNAME").lower()
+    puuid = bot.PUUID
+    region = bot.REGION
+    username = bot.USERNAME.lower()
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f"https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}"
@@ -232,7 +227,7 @@ async def get_deathmatch_info(bot, data, username, puuid):
         try:
             agent_emote = str(player["character"])
             if agent_emote == "KAY/O":
-                    agent_emote = "KAYO"
+                agent_emote = "KAYO"
         except KeyError:
             agent_emote = "modCheck"
         agent_emote = "" if bot is None else discord.utils.get(

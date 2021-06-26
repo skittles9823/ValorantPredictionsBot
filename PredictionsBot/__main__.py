@@ -1,23 +1,36 @@
+import logging
 import os
 
 from discord.ext import commands
-from dotenv import load_dotenv
+
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger = logging.getLogger()
 
 # Load the config and tell the user if they need to create one
-if os.path.isfile('config.env'):
-    load_dotenv("config.env")
+if os.path.exists("PredictionsBot/config.py"):
+    from PredictionsBot.config import Config
+    bot = commands.Bot(command_prefix=Config.BOT_PREFIX)
+    bot.BOT_PREFIX = Config.BOT_PREFIX
+    bot.DEBUG = Config.DEBUG
+    bot.TMI_TOKEN = Config.TMI_TOKEN
+    bot.CLIENT_ID = Config.CLIENT_ID
+    bot.BOT_NICK = Config.BOT_NICK
+    bot.CHANNEL = Config.CHANNEL
+    bot.TWITCH_BOT_OWNER = Config.TWITCH_BOT_OWNER
+    bot.TOKEN = Config.DISCORD_TOKEN
+    bot.ROLES = Config.ROLES
+    bot.USERNAME = Config.USERNAME
+    bot.REGION = Config.REGION
+    bot.PUUID = Config.PUUID
 else:
     print(
-        "config.env not found.\n"
-        "Please edit sample.env and either rename it or create a new config.env file."
+        "config.py not found.\n"
+        "Please edit sample_config.py and either rename it or create a new config.py file."
     )
     exit()
 
-TOKEN = str(os.getenv('DISCORD_TOKEN'))
-DEBUG = str(os.getenv('DEBUG')).lower()
-bot = commands.Bot(command_prefix=os.getenv('BOT_PREFIX'))
-
-if DEBUG != "true":
+if not bot.DEBUG:
     # Don't have a panic attack if someone runs a command the bot doesn't have
     @bot.event
     async def on_command_error(ctx, error):
@@ -37,4 +50,4 @@ except commands.errors.ExtensionFailed:
     pass
 
 
-bot.run(TOKEN)
+bot.run(bot.TOKEN)

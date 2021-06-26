@@ -1,8 +1,8 @@
 import json
-import os
 
 import aiohttp.client_exceptions as aioerror
 import PredictionsBot.valorant as val
+from PredictionsBot.__main__ import bot
 
 import discord
 from discord.ext import commands
@@ -14,7 +14,7 @@ class Discord(commands.Cog):
 
     @commands.command(name='ping', help='ping the bot to see if it\'s alive')
     # Ping the bot to see if it's online
-    @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
+    @commands.check_any(commands.is_owner(), commands.has_any_role(*bot.ROLES))
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round (self.bot.latency * 1000)} ms')
 
@@ -22,23 +22,21 @@ class Discord(commands.Cog):
     # without having to restart the bot after changing the config
     @commands.command(name='account', help='Switch players the bot is getting stats for')
     @commands.max_concurrency(1, wait=True)
-    @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
+    @commands.check_any(commands.is_owner(), commands.has_any_role(*bot.ROLES))
     async def account(self, ctx, arg):
         with open('accounts.json') as json_file:
             json_data = json.load(json_file)
             for accounts in json_data['data']['accounts']:
                 if arg.lower() in accounts['username'].lower():
-                    os.environ["discordArgs"] = "True"
-                    os.environ["PUUID"] = accounts['puuid']
-                    os.environ["USERNAME"] = accounts['username']
-                    os.environ["REGION"] = accounts['region']
-        username = os.getenv('USERNAME')
-        await ctx.send(f"Account is set to {username}")
+                    bot.PUUID = accounts['puuid']
+                    bot.USERNAME = accounts['username']
+                    bot.REGION = accounts['region']
+        await ctx.send(f"Account is set to {bot.USERNAME}")
 
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
     @commands.command(name='stats', help='Get the stats of the players last match')
     @commands.max_concurrency(1, wait=True)
-    @commands.has_any_role('predictions', 'Twitch Moderator', 'Moderators')
+    @commands.check_any(commands.is_owner(), commands.has_any_role(*bot.ROLES))
     async def stats(self, ctx):
         try:
             await val.gamemode_check(self.bot)
@@ -66,7 +64,7 @@ class Discord(commands.Cog):
                     result = "No"
                 elif val.ROUNDS_WON == val.ROUNDS_LOST:
                     result = "Draw"
-                username = os.getenv('USERNAME')
+                username = bot.USERNAME
                 embed.add_field(name="Rounds Played:",
                                 value=val.ROUNDS_PLAYED, inline=True)
                 embed.add_field(name="Rounds Won:",

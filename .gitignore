@@ -1,6 +1,6 @@
 accounts.json
-config.env
 PredictionsBot/__pycache__/*
 PredictionsBot/cogs/__pycache__/*
 PredictionsBot/cogs/personal.py
 .vscode/*
+PredictionsBot/config.py
