@@ -26,11 +26,16 @@ async def gamemode_check(bot):
     puuid = bot.PUUID
     region = bot.REGION
     username = bot.USERNAME.lower()
+    global DATA
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f"https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}"
         ) as response:
-            json_data = await response.json()
+            try:
+                json_data = await response.json()
+            except:
+                DATA = "Cloudflare: API Server Down"
+                return DATA
     global MODE
     try:
         data = json_data["data"][0]["data"]
@@ -38,7 +43,6 @@ async def gamemode_check(bot):
         try:
             data = json_data["data"][0]
         except KeyError:
-            global DATA
             DATA = json_data["message"]
             return DATA
     MODE = data["metadata"]["mode"]
