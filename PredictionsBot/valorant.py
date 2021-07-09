@@ -49,7 +49,7 @@ async def gamemode_check(bot):
     global DEATHMATCH
     if MODE.lower() in ["competitive", "unrated", "custom game"]:
         DEATHMATCH = False
-        await get_match_info(bot, data, username, puuid)
+        await get_match_info(bot, data, username)
         return (
             DEATHMATCH,
             MAP_PLAYED,
@@ -61,7 +61,8 @@ async def gamemode_check(bot):
             ROUNDS_LOST,
             KDA,
             HAS_WON,
-            MODE
+            MODE,
+            MATCH_MVP
         )
     elif MODE.lower() == "deathmatch":
         DEATHMATCH = True
@@ -70,7 +71,7 @@ async def gamemode_check(bot):
 
 
 # Get the full json response for the most recent match played
-async def get_match_info(bot, data, username, puuid):
+async def get_match_info(bot, data, username):
     global MAP_PLAYED
     global GAME_TIME
     global TEAM_PLAYERS
@@ -79,112 +80,99 @@ async def get_match_info(bot, data, username, puuid):
     global ROUNDS_WON
     global ROUNDS_LOST
     global KDA
+    global HAS_WON
+    global MATCH_MVP
     players = data["players"]
     user = next(d for d in players["all_players"]
                 if username in d["name"].lower())
     team = user["team"].lower()
-    if team != puuid:
-        opponent_team = "red" if team == "blue" else "blue"
-        OPPONENT_PLAYERS = ""
-        TEAM_PLAYERS = ""
-        mvp_team = max(players[team], key=lambda ev: ev["stats"]["score"])
-        mvp_opponent = max(players[opponent_team],
-                           key=lambda ev: ev["stats"]["score"])
-        ROUNDS_PLAYED = int(data["metadata"]["rounds_played"])
-        MAP_PLAYED = str(data["metadata"]["map"])
-        rank_emote = ""
-        for player in players[team]:
-            match_mvp = ""
-            if (
-                player["name"] == mvp_team["name"]
-                and mvp_team["stats"]["score"] > mvp_opponent["stats"]["score"]
-            ):
-                match_mvp = "**"
-            acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
-            acs = math.floor(acs)
-            try:
-                agent_emote = str(player["character"])
-                if agent_emote == "KAY/O":
-                    agent_emote = "KAYO"
-            except KeyError:
-                agent_emote = "modCheck"
-            agent_emote = (
-                "" if bot is None else discord.utils.get(
-                    bot.emojis, name=str(agent_emote))
-            )
-            if agent_emote is None:
-                agent_emote = discord.utils.get(bot.emojis, name="modCheck")
-            if MODE.lower() == "competitive":
-                rank = str(player["currenttier_patched"]).replace(' ', '')
-                rank_emote = (
-                    "" if bot is None else discord.utils.get(
-                        bot.emojis, name=str(rank))
-                )
-                if rank_emote is None:
-                    rank_emote = ""
-            TEAM_PLAYERS += (
-                f'{match_mvp}{agent_emote}{rank_emote} {player["name"]}{match_mvp}: '
-                f'{player["stats"]["kills"]}/'
-                f'{player["stats"]["deaths"]}/'
-                f'{player["stats"]["assists"]} ACS: {acs}\n'
-            )
-        TEAM_PLAYERS = TEAM_PLAYERS.rstrip()
-        team_players_split = TEAM_PLAYERS.split("\n")
-        team_players_split = team_players_split[:5]
-        team_players_split.sort(key=lambda x: int(
-            x.rsplit(" ", 1)[1]), reverse=True)
-        TEAM_PLAYERS = "\n".join(team_players_split)
-        for player in players[opponent_team]:
-            match_mvp = ""
-            if (
-                player["name"] == mvp_opponent["name"]
-                and mvp_opponent["stats"]["score"] > mvp_team["stats"]["score"]
-            ):
-                match_mvp = "**"
-            acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
-            acs = math.floor(acs)
-            try:
-                agent_emote = str(player["character"])
-                if agent_emote == "KAY/O":
-                    agent_emote = "KAYO"
-            except KeyError:
-                agent_emote = "modCheck"
-            agent_emote = (
-                "" if bot is None else discord.utils.get(
-                    bot.emojis, name=str(agent_emote))
-            )
-            if agent_emote is None:
-                agent_emote = discord.utils.get(bot.emojis, name="modCheck")
-            if MODE.lower() == "competitive":
-                rank = str(player["currenttier_patched"]).replace(' ', '')
-                rank_emote = (
-                    "" if bot is None else discord.utils.get(
-                        bot.emojis, name=str(rank))
-                )
-                if rank_emote is None:
-                    rank_emote = ""
-            OPPONENT_PLAYERS += (
-                f'{match_mvp}{agent_emote}{rank_emote} {player["name"]}{match_mvp}: '
-                f'{player["stats"]["kills"]}/'
-                f'{player["stats"]["deaths"]}/'
-                f'{player["stats"]["assists"]} ACS: {acs}\n'
-            )
-        OPPONENT_PLAYERS = OPPONENT_PLAYERS.rstrip()
-        opponent_players_split = OPPONENT_PLAYERS.split("\n")
-        opponent_players_split = opponent_players_split[0:5]
-        opponent_players_split.sort(key=lambda x: int(
-            x.rsplit(" ", 1)[1]), reverse=True)
-        OPPONENT_PLAYERS = "\n".join(opponent_players_split)
-        ROUNDS_WON = 0
-        ROUNDS_LOST = 0
-        for rounds in data["rounds"]:
-            if rounds["winning_team"].lower() == team:
-                ROUNDS_WON += 1
-            else:
-                ROUNDS_LOST += 1
-    if data["teams"][team]["has_won"] == "true":
-        HAS_WON = True
+    opponent_team = "red" if team == "blue" else "blue"
+    OPPONENT_PLAYERS = ""
+    TEAM_PLAYERS = ""
+    mvp_team = max(players[team], key=lambda ev: ev["stats"]["score"])
+    mvp_opponent = max(players[opponent_team],
+                       key=lambda ev: ev["stats"]["score"])
+    if mvp_team["stats"]["score"] > mvp_opponent["stats"]["score"]:
+        MATCH_MVP = mvp_team["name"]
     else:
+        MATCH_MVP = mvp_opponent["name"]
+    ROUNDS_PLAYED = int(data["metadata"]["rounds_played"])
+    MAP_PLAYED = str(data["metadata"]["map"])
+    rank_emote = ""
+    for player in players[team]:
+        acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
+        acs = math.floor(acs)
+        try:
+            agent_emote = str(player["character"])
+            if agent_emote == "KAY/O":
+                agent_emote = "KAYO"
+        except KeyError:
+            agent_emote = "modCheck"
+        agent_emote = (
+            "" if bot is None else discord.utils.get(
+                bot.emojis, name=str(agent_emote))
+        )
+        if agent_emote is None:
+            agent_emote = discord.utils.get(bot.emojis, name="modCheck")
+        if MODE.lower() == "competitive":
+            rank = str(player["currenttier_patched"]).replace(' ', '')
+            rank_emote = (
+                "" if bot is None else discord.utils.get(
+                    bot.emojis, name=str(rank))
+            )
+            if rank_emote is None:
+                rank_emote = ""
+        player_kda = f'{player["stats"]["kills"]}/{player["stats"]["deaths"]}/{player["stats"]["assists"]}'
+        name = player["name"]
+        TEAM_PLAYERS += (
+            f'{agent_emote}{rank_emote} `{name :<15} {player_kda :>10} {acs:>10} `\n'
+        )
+    TEAM_PLAYERS = TEAM_PLAYERS.rstrip()
+    team_players_split = TEAM_PLAYERS.split("\n")
+    team_players_split = team_players_split[:5]
+    team_players_split.sort(key=lambda x: int(
+        x.rsplit(" ", 2)[1]), reverse=True)
+    TEAM_PLAYERS = "\n".join(team_players_split)
+    for player in players[opponent_team]:
+        acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
+        acs = math.floor(acs)
+        try:
+            agent_emote = str(player["character"])
+            if agent_emote == "KAY/O":
+                agent_emote = "KAYO"
+        except KeyError:
+            agent_emote = "modCheck"
+        agent_emote = (
+            "" if bot is None else discord.utils.get(
+                bot.emojis, name=str(agent_emote))
+        )
+        if agent_emote is None:
+            agent_emote = discord.utils.get(bot.emojis, name="modCheck")
+        if MODE.lower() == "competitive":
+            rank = str(player["currenttier_patched"]).replace(' ', '')
+            rank_emote = (
+                "" if bot is None else discord.utils.get(
+                    bot.emojis, name=str(rank))
+            )
+            if rank_emote is None:
+                rank_emote = ""
+        player_kda = f'{player["stats"]["kills"]}/{player["stats"]["deaths"]}/{player["stats"]["assists"]}'
+        name = player["name"]
+        OPPONENT_PLAYERS += (
+            f'{agent_emote}{rank_emote} `{name :<15} {player_kda :>10} {acs:>10} `\n'
+        )
+    OPPONENT_PLAYERS = OPPONENT_PLAYERS.rstrip()
+    opponent_players_split = OPPONENT_PLAYERS.split("\n")
+    opponent_players_split = opponent_players_split[:5]
+    opponent_players_split.sort(key=lambda x: int(
+        x.rsplit(" ", 2)[1]), reverse=True)
+    OPPONENT_PLAYERS = "\n".join(opponent_players_split)
+    ROUNDS_WON = data["teams"][team]["rounds_won"]
+    ROUNDS_LOST = data["teams"][team]["rounds_lost"]
+    HAS_WON = None
+    if data["teams"][team]["has_won"] is True:
+        HAS_WON = True
+    elif data["teams"][team]["has_won"] is False:
         HAS_WON = False
     GAME_TIME = str(data["metadata"]["game_start_patched"])
     _kills = int(user["stats"]["kills"])
@@ -224,9 +212,6 @@ async def get_deathmatch_info(bot, data, username, puuid):
 
     ALL_PLAYERS = ""
     for player in players["all_players"]:
-        winner = ""
-        if player["stats"]["kills"] == 40:
-            winner = "**"
         score = int(player["stats"]["score"])
         try:
             agent_emote = str(player["character"])
@@ -236,15 +221,16 @@ async def get_deathmatch_info(bot, data, username, puuid):
             agent_emote = "modCheck"
         agent_emote = "" if bot is None else discord.utils.get(
             bot.emojis, name=str(agent_emote))
+
+        player_kda = f'{player["stats"]["kills"]}/{player["stats"]["deaths"]}/{player["stats"]["assists"]}'
+        name = player["name"]
         ALL_PLAYERS += (
-            f'{winner}{agent_emote} {player["name"]}{winner}: '
-            f'{player["stats"]["kills"]}/'
-            f'{player["stats"]["deaths"]}/'
-            f'{player["stats"]["assists"]} Score: {score}\n'
+            f'{agent_emote} '
+            f'`{name :<15} {player_kda :>10} {score:>10} `\n'
         )
     ALL_PLAYERS = ALL_PLAYERS.rstrip()
     split = ALL_PLAYERS.split("\n")
     split = split[0:14]
-    split.sort(key=lambda x: int(x.rsplit(" ", 1)[1]), reverse=True)
+    split.sort(key=lambda x: int(x.rsplit(" ", 2)[1]), reverse=True)
     ALL_PLAYERS = "\n".join(split)
     return MAP_PLAYED, GAME_TIME, ALL_PLAYERS, KDA, KILLS
