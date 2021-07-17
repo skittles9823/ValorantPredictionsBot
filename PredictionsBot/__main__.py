@@ -13,11 +13,14 @@ if os.path.exists("PredictionsBot/config.py"):
     bot = commands.Bot(command_prefix=Config.BOT_PREFIX)
     bot.BOT_PREFIX = Config.BOT_PREFIX
     bot.DEBUG = Config.DEBUG
-    bot.TMI_TOKEN = Config.TMI_TOKEN
-    bot.CLIENT_ID = Config.CLIENT_ID
-    bot.BOT_NICK = Config.BOT_NICK
-    bot.CHANNEL = Config.CHANNEL
-    bot.TWITCH_BOT_OWNER = Config.TWITCH_BOT_OWNER
+    try:
+        bot.TMI_TOKEN = Config.TMI_TOKEN
+        bot.CLIENT_ID = Config.CLIENT_ID
+        bot.BOT_NICK = Config.BOT_NICK
+        bot.CHANNEL = Config.CHANNEL
+        bot.TWITCH_BOT_OWNER = Config.TWITCH_BOT_OWNER
+    except:
+        pass
     bot.TOKEN = Config.DISCORD_TOKEN
     bot.ROLES = Config.ROLES
     bot.USERNAME = Config.USERNAME
@@ -38,14 +41,8 @@ if not bot.DEBUG:
             pass
 
 bot.load_extension("PredictionsBot.cogs.discord")
-# I'd put these in the same try catch but since I'm lazy and use this bot also as my own twitch bot in a `personal` cog it's just easier this way.
 try:
     bot.load_extension("PredictionsBot.cogs.twitch")
-except commands.errors.ExtensionFailed:
-    pass
-try:
-    if os.path.isfile('PredictionsBot/cogs/personal.py'):
-        bot.load_extension("PredictionsBot.cogs.personal")
 except commands.errors.ExtensionFailed:
     pass
 

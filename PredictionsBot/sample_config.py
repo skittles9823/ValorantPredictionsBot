@@ -4,6 +4,7 @@ class Config(object):
     DEBUG = False
 
     # Twitch stuff
+    # If you don't need a twitch bot you may comment out these lines and just fill in the Discord and Valorant variables.
     TMI_TOKEN = "oauth:"
     CLIENT_ID = ""
     BOT_NICK = ""
@@ -18,8 +19,8 @@ class Config(object):
 
     # Valorant stuff
     # Used to find which team the specified player is on
-    USERNAME="Hiko"
-    # Regions can be na, ap, eu, and kr
+    USERNAME = "Hiko"
+    # Regions can be na, ap, eu, or kr
     REGION = "na"
     #Hiko's PUUID
     PUUID = "966186a2-fa1e-5445-b1c3-ab25f210f3e3"

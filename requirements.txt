@@ -1,2 +1,2 @@
-twitchio
+twitchio==2.0.0
 discord.py
