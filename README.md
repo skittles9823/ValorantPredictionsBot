@@ -8,7 +8,7 @@ A simple Twitch/Discord bot which can grab the stats most commonly used for Twit
 
 # Future plans
 
-In the future, the hope is this bot will be able to end a prediction and also give the correct result so the viewers can have a seamless experience and not get scammed by Pepega mods, unfortunatly the Twitch API does not yet cover predictions so I would please ask anyone interested to vote on [this](https://twitch.uservoice.com/forums/310213-developers/suggestions/41966401-api-support-for-predictions) Twitch discussion board and hopefully twitch will release an API ASAP.
+In the future, the hope is this bot will be able to end a prediction and also give the correct result so the viewers can have a seamless experience and not get scammed by Pepega mods, this will be worked on as soon as [TwitchIO](https://github.com/TwitchIO/TwitchIO) adds support for the predictions API.
 
 # Usage
 
