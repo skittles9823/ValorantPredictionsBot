@@ -19,9 +19,9 @@ pip install --user -r requirements.txt
 ```
 
 2. Create a basic bot instance for Twitch and Discord, you can use Google for this.
-3. Rename and edit sample.env to config.env with the bots credentials.
-4. Find the players Username, Region and PUUID you wish to use and input them in the correct env vars.
-    - if you wish to use the bot with multiple Valorant accounts, edit [sample_accounts.json](./sample_accounts.json) and rename it to accounts.json, then use the account command to switch between users via their username.
+3. Rename and edit [sample_config.py](./PredictionsBot/sample_config.py) to config.py with the bots credentials.
+4. Find the players Username, Region and PUUID you wish to use and input them in the correct variables.
+    - if you wish to use the bot with multiple Valorant accounts, edit [sample_accounts.json](./sample_accounts.json) and rename it to accounts.json, then use the stats command followed by the username to get the stats or switch the bot to use said player.
 5. Finally once the config is setup and finished, run the bot with:
 
 ```
