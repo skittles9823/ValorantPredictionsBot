@@ -48,9 +48,9 @@ async def gamemode_check(bot):
     try:
         MODE = data["metadata"]["mode"]
     except KeyError:
-        MODE = "Custom game"
+        MODE = "Unknown"
     global DEATHMATCH
-    if MODE.lower() in ["competitive", "unrated", "custom game"]:
+    if MODE.lower() in ["competitive", "unrated", "custom game", "unknown"]:
         DEATHMATCH = False
         await get_match_info(bot, data, username)
         return (
