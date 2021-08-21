@@ -1,5 +1,3 @@
-import math
-
 import aiohttp
 import discord
 
@@ -103,8 +101,7 @@ async def get_match_info(bot, data, username):
     MAP_PLAYED = str(data["metadata"]["map"])
     rank_emote = ""
     for player in players[team]:
-        acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
-        acs = math.floor(acs)
+        acs = int(player["stats"]["score"]) // ROUNDS_PLAYED
         try:
             agent_emote = str(player["character"])
             if agent_emote == "KAY/O":
@@ -137,8 +134,7 @@ async def get_match_info(bot, data, username):
         x.rsplit(" ", 2)[1]), reverse=True)
     TEAM_PLAYERS = "\n".join(team_players_split)
     for player in players[opponent_team]:
-        acs = int(player["stats"]["score"]) / ROUNDS_PLAYED
-        acs = math.floor(acs)
+        acs = int(player["stats"]["score"]) // ROUNDS_PLAYED
         try:
             agent_emote = str(player["character"])
             if agent_emote == "KAY/O":
