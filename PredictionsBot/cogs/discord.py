@@ -102,6 +102,7 @@ class Discord(commands.Cog):
                 await ctx.send(embed=embed)
         else:
             await ctx.send(f"API Error {discord.utils.get(self.bot.emojis, name='Sadge')}: {val.DATA}")
+            await ctx.send(f"{val.resp_error}")
 
 
 def setup(discord_bot):
