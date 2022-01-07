@@ -25,7 +25,10 @@ async def gamemode_check(bot):
     region = bot.REGION
     username = bot.USERNAME.lower()
     global DATA, resp_error
-    async with aiohttp.ClientSession() as session:
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
+    }
+    async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(
             f"https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}"
         ) as response:
