@@ -36,4 +36,4 @@ python3 -m PredictionsBot
 
 ## Discord
 
-![Discord](images/Discord_new.png)
+![Discord](images/Discord.png)
