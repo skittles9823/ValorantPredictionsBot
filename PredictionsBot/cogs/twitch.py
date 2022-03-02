@@ -1,7 +1,8 @@
+import aiohttp
 import aiohttp.client_exceptions as aioerror
 import PredictionsBot.valorant as val
 from twitchio.ext import commands as commands
-import aiohttp
+
 from discord.ext import commands as discord_commands
 
 

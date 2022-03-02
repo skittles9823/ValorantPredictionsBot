@@ -1,2 +1,2 @@
-twitchio==2.0.0
-discord.py
+twitchio==2.1.5
+py-cord==2.0.0b4
