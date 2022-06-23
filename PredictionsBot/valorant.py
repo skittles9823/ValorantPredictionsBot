@@ -1,5 +1,6 @@
 import aiohttp
 import discord
+import re
 
 MODE = None
 DEATHMATCH = None
@@ -107,9 +108,7 @@ async def get_match_info(bot, data, username):
     for player in players[team]:
         acs = int(player["stats"]["score"]) // ROUNDS_PLAYED
         try:
-            agent_emote = str(player["character"])
-            if agent_emote == "KAY/O":
-                agent_emote = "KAYO"
+            agent_emote = re.sub('[^0-9a-zA-Z]+', '', str(player["character"]))
         except KeyError:
             agent_emote = "modCheck"
         agent_emote = (
@@ -140,9 +139,7 @@ async def get_match_info(bot, data, username):
     for player in players[opponent_team]:
         acs = int(player["stats"]["score"]) // ROUNDS_PLAYED
         try:
-            agent_emote = str(player["character"])
-            if agent_emote == "KAY/O":
-                agent_emote = "KAYO"
+            agent_emote = re.sub('[^0-9a-zA-Z]+', '', str(player["character"]))
         except KeyError:
             agent_emote = "modCheck"
         agent_emote = (
@@ -217,14 +214,15 @@ async def get_deathmatch_info(bot, data, username, puuid):
     for player in players["all_players"]:
         score = int(player["stats"]["score"])
         try:
-            agent_emote = str(player["character"])
-            if agent_emote == "KAY/O":
-                agent_emote = "KAYO"
+            agent_emote = re.sub('[^0-9a-zA-Z]+', '', str(player["character"]))
         except KeyError:
             agent_emote = "modCheck"
-        agent_emote = "" if bot is None else discord.utils.get(
-            bot.emojis, name=str(agent_emote))
-
+        agent_emote = (
+            "" if bot is None else discord.utils.get(
+                bot.emojis, name=str(agent_emote))
+        )
+        if agent_emote is None:
+            agent_emote = discord.utils.get(bot.emojis, name="modCheck")
         player_kda = f'{player["stats"]["kills"]}/{player["stats"]["deaths"]}/{player["stats"]["assists"]}'
         name = player["name"]
         ALL_PLAYERS += (

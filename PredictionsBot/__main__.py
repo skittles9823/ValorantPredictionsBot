@@ -1,7 +1,7 @@
 import logging
 import os
 
-from discord import errors
+import discord
 from discord.ext import commands
 
 logging.basicConfig(level=logging.INFO,
@@ -44,7 +44,7 @@ if not bot.DEBUG:
 bot.load_extension("PredictionsBot.cogs.discord")
 try:
     bot.load_extension("PredictionsBot.cogs.twitch")
-except errors.ExtensionFailed:
+except discord.errors.ExtensionFailed:
     pass
 
 

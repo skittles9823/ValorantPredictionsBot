@@ -6,6 +6,7 @@ from PredictionsBot.__main__ import bot
 
 import discord
 from discord.ext import commands
+from discord import option
 
 
 class Discord(commands.Cog):
@@ -13,20 +14,28 @@ class Discord(commands.Cog):
         self.bot = bot
 
     # Ping the bot to see if it's online
-    @commands.command(name='ping', help='ping the bot to see if it\'s alive')
-    @commands.check_any(commands.is_owner(), commands.has_any_role(*bot.ROLES))
-    async def ping(self, ctx):
-        await ctx.send(f'Pong! {round (self.bot.latency * 1000)} ms')
+    @commands.slash_command(name='ping', help='ping the bot to see if it\'s alive')
+    @discord.default_permissions(
+        manage_messages=True,
+        ban_members=True,
+    )
+    async def ping(self, ctx: discord.ApplicationContext):
+        await ctx.respond(f'Pong! {round (self.bot.latency * 1000)} ms')
 
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
-    @commands.command(name='stats', help=f'get the stats from the players last match: {bot.BOT_PREFIX}stats | {bot.BOT_PREFIX}stats {{username}}')
+    @commands.slash_command(name='stats', help=f'get the stats from the players last match: {bot.BOT_PREFIX}stats | {bot.BOT_PREFIX}stats {{username}}')
     @commands.max_concurrency(1, wait=True)
-    @commands.check_any(commands.is_owner(), commands.has_any_role(*bot.ROLES))
-    async def stats(self, ctx, arg=None):
+    @discord.default_permissions(
+        manage_messages=True,
+        ban_members=True,
+    )
+    @option("username", description="username, optional.", default='Hiko')
+    async def stats(self, ctx: discord.ApplicationContext, username: str):
+        await ctx.respond("Processing...")
         account_names = ""
-        if arg is not None:
+        if username is not None:
             try:
-                arg = arg.lower()
+                arg = username.lower()
                 with open('accounts.json') as json_file:
                     account_data = json.load(json_file)
                     for account in account_data['data']['accounts']:
@@ -37,7 +46,7 @@ class Discord(commands.Cog):
                             bot.REGION = account['region']
                 if not arg in account_names.lower():
                     account_names = account_names[:-2]
-                    await ctx.send(f"Please use a valid account after {bot.BOT_PREFIX}stats\n"
+                    await ctx.edit(f"Please use a valid account after {bot.BOT_PREFIX}stats\n"
                                    f"Valid names are: {account_names}.")
                     return
             except AttributeError:
@@ -47,12 +56,12 @@ class Discord(commands.Cog):
         try:
             await val.gamemode_check(self.bot)
         except aioerror.CommandInvokeError:
-            await ctx.send(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
+            await ctx.edit(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
         if val.DATA == None:
             embed = discord.Embed(
-                title=f"{val.MAP_PLAYED} {val.MODE} Results", color=0x00aaff)
-            embed.set_author(name="ValorantPredictionsBot",
-                             url="https://github.com/skittles9823/ValorantPredictionsBot")
+                title=f"{val.MAP_PLAYED} {val.MODE} Results",
+                color=discord.Color.blue()
+            )
             if val.DEATHMATCH == False:
                 if val.HAS_WON is not None:
                     if val.HAS_WON is True:
@@ -70,39 +79,55 @@ class Discord(commands.Cog):
                         result = "Draw"
                 username = bot.USERNAME
                 embed.add_field(name="Rounds Played:",
-                                value=val.ROUNDS_PLAYED, inline=True)
+                                value=f"{val.ROUNDS_PLAYED}",
+                                inline=True)
                 embed.add_field(name="Rounds Won:",
-                                value=val.ROUNDS_WON, inline=True)
+                                value=f"{val.ROUNDS_WON}",
+                                inline=True)
                 embed.add_field(name="Rounds Lost:",
-                                value=val.ROUNDS_LOST, inline=True)
+                                value=f"{val.ROUNDS_LOST}",
+                                inline=True)
                 embed.add_field(name="Match Start Time:",
-                                value=val.GAME_TIME, inline=True)
-                embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
+                                value=f"{val.GAME_TIME}",
+                                inline=True)
+                embed.add_field(name="K/D/A:",
+                                value=f"{val.KDA}",
+                                inline=True)
                 embed.add_field(name="Did they win?",
-                                value=result, inline=True)
+                                value=f"{result}",
+                                inline=True)
                 embed.add_field(name="MatchMVP:",
-                                value=val.MATCH_MVP, inline=True)
+                                value=f"{val.MATCH_MVP}",
+                                inline=True)
                 embed.add_field(name=f"{username}'s team:",
-                                value=val.TEAM_PLAYERS, inline=False)
+                                value=f"{val.TEAM_PLAYERS}",
+                                inline=False)
                 embed.add_field(name="Opponents team:",
-                                value=val.OPPONENT_PLAYERS, inline=False)
-                await ctx.send(embed=embed)
+                                value=f"{val.OPPONENT_PLAYERS}",
+                                inline=False)
             else:
                 if val.KILLS == 40:
                     result = "Yes"
                 else:
                     result = "No"
                 embed.add_field(name="Match Start Time:",
-                                value=val.GAME_TIME, inline=True)
-                embed.add_field(name="K/D/A:", value=val.KDA, inline=True)
+                                value=f"{val.GAME_TIME}",
+                                inline=True)
+                embed.add_field(name="K/D/A:",
+                                value=f"{val.KDA}",
+                                inline=True)
                 embed.add_field(name="Did they win?",
-                                value=result, inline=True)
+                                value=f"{result}",
+                                inline=True)
                 embed.add_field(name="Players:",
-                                value=val.ALL_PLAYERS, inline=False)
-                await ctx.send(embed=embed)
+                                value=f"{val.ALL_PLAYERS}",
+                                inline=False)
+            embed.set_author(name="ValorantPredictionsBot",
+                             url="https://github.com/skittles9823/ValorantPredictionsBot")
+            await ctx.edit(embed=embed)
         else:
-            await ctx.send(f"API Error {discord.utils.get(self.bot.emojis, name='Sadge')}: {val.DATA}")
-            await ctx.send(f"{val.resp_error}")
+            await ctx.edit(f"API Error {discord.utils.get(self.bot.emojis, name='Sadge')}: {val.DATA}")
+            await ctx.edit(f"{val.resp_error}")
 
 
 def setup(discord_bot):
