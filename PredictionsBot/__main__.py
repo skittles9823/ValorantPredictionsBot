@@ -11,7 +11,9 @@ logger = logging.getLogger()
 # Load the config and tell the user if they need to create one
 if os.path.exists("PredictionsBot/config.py"):
     from PredictionsBot.config import Config
-    bot = commands.Bot(command_prefix=Config.BOT_PREFIX)
+    bot = discord.Bot(
+        command_prefix=commands.when_mentioned_or(f"{Config.BOT_PREFIX}")
+    )
     bot.BOT_PREFIX = Config.BOT_PREFIX
     bot.DEBUG = Config.DEBUG
     try:

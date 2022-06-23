@@ -5,8 +5,10 @@ import PredictionsBot.valorant as val
 from PredictionsBot.__main__ import bot
 
 import discord
-from discord.ext import commands
 from discord import option
+from discord.ext import commands
+
+bot = discord.Bot()
 
 
 class Discord(commands.Cog):
@@ -14,7 +16,8 @@ class Discord(commands.Cog):
         self.bot = bot
 
     # Ping the bot to see if it's online
-    @commands.slash_command(name='ping', help='ping the bot to see if it\'s alive')
+
+    @commands.slash_command()
     @discord.default_permissions(
         manage_messages=True,
         ban_members=True,
@@ -23,8 +26,7 @@ class Discord(commands.Cog):
         await ctx.respond(f'Pong! {round (self.bot.latency * 1000)} ms')
 
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
-    @commands.slash_command(name='stats', help=f'get the stats from the players last match: {bot.BOT_PREFIX}stats | {bot.BOT_PREFIX}stats {{username}}')
-    @commands.max_concurrency(1, wait=True)
+    @commands.slash_command()
     @discord.default_permissions(
         manage_messages=True,
         ban_members=True,
@@ -130,5 +132,5 @@ class Discord(commands.Cog):
             await ctx.edit(f"{val.resp_error}")
 
 
-def setup(discord_bot):
-    discord_bot.add_cog(Discord(discord_bot))
+def setup(bot):
+    bot.add_cog(Discord(bot))
