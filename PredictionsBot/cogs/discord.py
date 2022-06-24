@@ -25,6 +25,20 @@ class Discord(commands.Cog):
     async def ping(self, ctx: discord.ApplicationContext):
         await ctx.respond(f'Pong! {round (self.bot.latency * 1000)} ms')
 
+    @commands.slash_command()
+    @discord.default_permissions(
+        manage_messages=True,
+        ban_members=True,
+    )
+    @option("code", description="crosshair code")
+    async def crosshair(self, ctx: discord.ApplicationContext, code: str):
+        embed = discord.Embed()
+        embed.set_image(
+            url=f"https://api.henrikdev.xyz/valorant/v1/crosshair/generate?id={code}"
+        )
+        embed.set_footer(text=f"{code}")
+        await ctx.respond(embed=embed)
+
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
     @commands.slash_command()
     @discord.default_permissions(
