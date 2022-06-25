@@ -36,7 +36,7 @@ class Discord(commands.Cog):
         embed.set_image(
             url=f"https://api.henrikdev.xyz/valorant/v1/crosshair/generate?id={code}"
         )
-        embed.set_footer(text=f"{code}")
+        embed.add_field(name="Import Code:", value=f"{code}", inline=False)
         await ctx.respond(embed=embed)
 
     # Get the stats from the most recent game as well as the K/D/A from all players on the players team
