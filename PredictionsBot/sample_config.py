@@ -22,5 +22,5 @@ class Config(object):
     USERNAME = "Hiko"
     # Regions can be na, ap, eu, or kr
     REGION = "na"
-    #Hiko's PUUID
+    # Hiko's PUUID
     PUUID = "966186a2-fa1e-5445-b1c3-ab25f210f3e3"

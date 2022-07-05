@@ -3,6 +3,7 @@ import json
 import aiohttp.client_exceptions as aioerror
 import PredictionsBot.valorant as val
 from PredictionsBot.__main__ import bot
+from PredictionsBot.config import Config
 
 import discord
 from discord import option
@@ -45,7 +46,7 @@ class Discord(commands.Cog):
         manage_messages=True,
         ban_members=True,
     )
-    @option("username", description="username, optional.", default='Hiko')
+    @option("username", description="username, optional.", default=Config.USERNAME)
     async def stats(self, ctx: discord.ApplicationContext, username: str):
         await ctx.respond("Processing...")
         account_names = ""

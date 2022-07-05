@@ -1,6 +1,7 @@
+import re
+
 import aiohttp
 import discord
-import re
 
 MODE = None
 DEATHMATCH = None
