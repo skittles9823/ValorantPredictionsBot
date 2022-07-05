@@ -25,7 +25,6 @@ if os.path.exists("PredictionsBot/config.py"):
     except:
         pass
     bot.TOKEN = Config.DISCORD_TOKEN
-    bot.ROLES = Config.ROLES
     bot.USERNAME = Config.USERNAME
     bot.REGION = Config.REGION
     bot.PUUID = Config.PUUID

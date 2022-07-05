@@ -15,7 +15,6 @@ class Config(object):
     # Discord stuff
     # My token
     DISCORD_TOKEN = ""
-    ROLES = ['predictions', 'Twitch Moderator', 'Moderators']
 
     # Valorant stuff
     # Used to find which team the specified player is on

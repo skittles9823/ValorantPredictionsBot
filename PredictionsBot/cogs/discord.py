@@ -50,7 +50,7 @@ class Discord(commands.Cog):
     async def stats(self, ctx: discord.ApplicationContext, username: str):
         await ctx.respond("Processing...")
         account_names = ""
-        if username is not None:
+        if username is not Config.USERNAME:
             try:
                 arg = username.lower()
                 with open('accounts.json') as json_file:
@@ -71,7 +71,7 @@ class Discord(commands.Cog):
             except TypeError:
                 pass
         try:
-            await val.gamemode_check(self.bot)
+            await val.gamemode_check(self.bot, bot.PUUID, bot.REGION, bot.USERNAME)
         except aioerror.CommandInvokeError:
             await ctx.edit(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
         if val.DATA == None:

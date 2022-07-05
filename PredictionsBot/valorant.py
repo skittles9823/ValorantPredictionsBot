@@ -22,10 +22,8 @@ OPPONENT_PLAYERS = None
 DATA = None
 
 
-async def gamemode_check(bot):
-    puuid = bot.PUUID
-    region = bot.REGION
-    username = bot.USERNAME.lower()
+async def gamemode_check(bot, puuid, region, username):
+    username = username.lower()
     global DATA, resp_error
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
