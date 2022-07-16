@@ -26,8 +26,7 @@ if os.path.exists("PredictionsBot/config.py"):
         pass
     bot.TOKEN = Config.DISCORD_TOKEN
     bot.USERNAME = Config.USERNAME
-    bot.REGION = Config.REGION
-    bot.PUUID = Config.PUUID
+    bot.TAG = Config.TAG
 else:
     print(
         "config.py not found.\n"
