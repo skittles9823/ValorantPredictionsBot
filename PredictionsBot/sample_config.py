@@ -17,9 +17,6 @@ class Config(object):
     DISCORD_TOKEN = ""
 
     # Valorant stuff
-    # Used to find which team the specified player is on
-    USERNAME = "Hiko"
-    # Regions can be na, ap, eu, or kr
-    REGION = "na"
-    # Hiko's PUUID
-    PUUID = "966186a2-fa1e-5445-b1c3-ab25f210f3e3"
+    # Used as the default player to get match stats for
+    USERNAME = "100T Hiko"
+    TAG = "000"

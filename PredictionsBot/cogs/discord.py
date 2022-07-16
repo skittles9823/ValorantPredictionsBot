@@ -1,5 +1,3 @@
-import json
-
 import aiohttp.client_exceptions as aioerror
 import PredictionsBot.valorant as val
 from PredictionsBot.__main__ import bot
@@ -47,31 +45,11 @@ class Discord(commands.Cog):
         ban_members=True,
     )
     @option("username", description="username, optional.", default=Config.USERNAME)
-    async def stats(self, ctx: discord.ApplicationContext, username: str):
+    @option("tag", description="tag, optional.", default=Config.TAG)
+    async def stats(self, ctx: discord.ApplicationContext, username: str, tag: str):
         await ctx.respond("Processing...")
-        account_names = ""
-        if username is not Config.USERNAME:
-            try:
-                arg = username.lower()
-                with open('accounts.json') as json_file:
-                    account_data = json.load(json_file)
-                    for account in account_data['data']['accounts']:
-                        account_names += f"{account['username']}, "
-                        if arg in account['username'].lower():
-                            bot.PUUID = account['puuid']
-                            bot.USERNAME = account['username']
-                            bot.REGION = account['region']
-                if not arg in account_names.lower():
-                    account_names = account_names[:-2]
-                    await ctx.edit(f"Please use a valid account after {bot.BOT_PREFIX}stats\n"
-                                   f"Valid names are: {account_names}.")
-                    return
-            except AttributeError:
-                pass
-            except TypeError:
-                pass
         try:
-            await val.gamemode_check(self.bot, bot.PUUID, bot.REGION, bot.USERNAME)
+            await val.gamemode_check(self.bot, username, tag)
         except aioerror.CommandInvokeError:
             await ctx.edit(f"API down {discord.utils.get(self.bot.emojis, name='Sadge')}")
         if val.DATA == None:
@@ -94,7 +72,7 @@ class Discord(commands.Cog):
                         result = "No"
                     elif val.ROUNDS_WON == val.ROUNDS_LOST:
                         result = "Draw"
-                username = bot.USERNAME
+                username = val.USERNAME
                 embed.add_field(name="Rounds Played:",
                                 value=f"{val.ROUNDS_PLAYED}",
                                 inline=True)

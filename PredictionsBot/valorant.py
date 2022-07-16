@@ -22,13 +22,19 @@ OPPONENT_PLAYERS = None
 DATA = None
 
 
-async def gamemode_check(bot, puuid, region, username):
-    username = username.lower()
+async def gamemode_check(bot, username, tag):
     global DATA, resp_error
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0'
     }
     async with aiohttp.ClientSession(headers=headers) as session:
+        async with session.get(
+            f"https://api.henrikdev.xyz/valorant/v1/account/{username}/{tag}"
+        ) as account:
+            account = await account.json()
+            region = account['data']['region']
+            puuid = account['data']['puuid']
+            username = account['data']['name']
         async with session.get(
             f"https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}"
         ) as response:
@@ -39,6 +45,8 @@ async def gamemode_check(bot, puuid, region, username):
                 resp_error = response
                 return DATA, resp_error
     global MODE
+    global USERNAME
+    USERNAME = username
     try:
         data = json_data["data"][0]["data"]
     except KeyError:
@@ -52,7 +60,11 @@ async def gamemode_check(bot, puuid, region, username):
     except KeyError:
         MODE = "Unknown"
     global DEATHMATCH
-    if MODE.lower() in ["competitive", "unrated", "custom game", "unknown"]:
+    if MODE.lower() == "deathmatch":
+        DEATHMATCH = True
+        await get_deathmatch_info(bot, data, username, puuid)
+        return DEATHMATCH, GAME_TIME, KDA, MODE, USERNAME
+    elif MODE.lower() in ["competitive", "unrated", "custom game", "unknown"]:
         DEATHMATCH = False
         await get_match_info(bot, data, username)
         return (
@@ -67,12 +79,9 @@ async def gamemode_check(bot, puuid, region, username):
             KDA,
             HAS_WON,
             MODE,
+            USERNAME,
             MATCH_MVP
         )
-    elif MODE.lower() == "deathmatch":
-        DEATHMATCH = True
-        await get_deathmatch_info(bot, data, username, puuid)
-        return DEATHMATCH, GAME_TIME, KDA, MODE
 
 
 # Get the full json response for the most recent match played
@@ -89,7 +98,7 @@ async def get_match_info(bot, data, username):
     global MATCH_MVP
     players = data["players"]
     user = next(d for d in players["all_players"]
-                if username in d["name"].lower())
+                if username.lower() in d["name"].lower())
     team = user["team"].lower()
     opponent_team = "red" if team == "blue" else "blue"
     OPPONENT_PLAYERS = ""
@@ -199,7 +208,7 @@ async def get_deathmatch_info(bot, data, username, puuid):
     global KDA
     players = data["players"]
     user = next(d for d in players["all_players"]
-                if username in d["name"].lower())
+                if username.lower() in d["name"].lower())
 
     deaths = int(user["stats"]["deaths"])
     assists = int(user["stats"]["assists"])
