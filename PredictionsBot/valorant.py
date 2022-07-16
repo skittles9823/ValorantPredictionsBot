@@ -64,7 +64,7 @@ async def gamemode_check(bot, username, tag):
         DEATHMATCH = True
         await get_deathmatch_info(bot, data, username, puuid)
         return DEATHMATCH, GAME_TIME, KDA, MODE, USERNAME
-    elif MODE.lower() in ["competitive", "unrated", "custom game", "unknown"]:
+    elif MODE.lower() in ["competitive", "unrated", "custom game", "escalation", "snowball fight", "new map", "spike rush", "unknown"]:
         DEATHMATCH = False
         await get_match_info(bot, data, username)
         return (
