@@ -32,9 +32,9 @@ async def gamemode_check(bot, username, tag):
             f"https://api.henrikdev.xyz/valorant/v1/account/{username}/{tag}"
         ) as account:
             account = await account.json()
-            region = account['data']['region']
-            puuid = account['data']['puuid']
-            username = account['data']['name']
+            region = account["data"]["region"]
+            puuid = account["data"]["puuid"]
+            username = account["data"]["name"]
         async with session.get(
             f"https://api.henrikdev.xyz/valorant/v3/by-puuid/matches/{region}/{puuid}"
         ) as response:
